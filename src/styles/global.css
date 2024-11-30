@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration:none;
+    border:none;
+    box-sizing:border-box;
+    
+}
+:root{
+  --primary-linear:linear-gradient(to right,#ffb200 30%,#ffdc2b);
+  --primary:#ffb200;
+  --t-color:#878787;
+  --back-color:#ebebeb;
+}
+
+
+.light{
+ background:linear-gradient(#ebebeb 20%,#fec60074 100%);
+  .article{
+     background: white;
+  }
+  .step h2{
+    color:rgb(55,55,51);
+   }
+}
+.dark{
+  background: black;
+   .shadow{opacity:1;}
+    .article{
+    background: #181818;
+  }
+}
+
+button{
+  padding: 20px;
+  border-radius:8px;
+  background: var(--primary-linear);
+  color: white;
+  margin: 10px 0;
+  position: relative;
+  left: 50%;
+  translate: -50%;
+}
+
+main{
+  position: relative;
+  padding-bottom: 30px;
+  img{
+    width: 90%;
+    height: 35vh;
+    object-fit:cover;
+    margin: 2px 0;
+    position: relative;
+    left: 50%;
+    translate:-50%;
+    
+   }
+  .welcome{
+    padding: 80px 10px 30px 10px;
+  }
+  .step{
+    width: 90%;
+    max-width: 600px;
+    padding: 20px 5px;
+    border:solid 2px rgb(255,165,0);
+    position:relative ;
+    left:50%;
+    translate:-50%;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow:1px 2#42445Apx 2px rgba(255,165,0);
+    h2{
+    text-align:center ;
+  }
+  }
+  .shadow{
+     width: 60%;
+     min-width:240px;
+     max-width:750px;
+     height: 40vh;
+     background: var(--primary);
+     position: absolute;
+     top: -17vh;
+     left: 50%;
+     translate:-50%;
+     filter:blur(10vh);
+     border-radius: 50%;
+     opacity:0;
+     transition:0.5s ease-in-out;
+  } 
+   h1{
+    text-align:center;
+    color:transparent; 
+    -webkit-background-clip:text;
+    background-image: var(--primary-linear);
+    margin-bottom:50px ;
+       font-size:12vmin;
+       padding-top:2vh;
+       font-family: "Afacad Flux", sans-serif;
+       font-optical-sizing: auto;
+       font-style: normal;
+       font-variation-settings:"slnt" 0;
+  }
+  h2{
+     color:rgb(245,235,230); 
+     -webkit-background-clip:text;
+     background-image: var(--primary-linear);
+     padding:15px 10px;  
+     font-weight: 500;
+   }
+  p{
+    color: var(--t-color);
+    font-size:4vmin;
+  }
+}
+  .article{
+    padding:15px 0;   
+    p{
+        font-size:3.7vmin;
+    }
+    .code{
+      background: #00182fc9;
+      color:#00c0ff;
+      padding: 1px 4px;
+    }
+}
