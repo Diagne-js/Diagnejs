@@ -2,7 +2,7 @@ import {v} from '../v/v.js'
 import {renderObjectsTree} from '../utils/utils.js'
 
 export const attributes = [
- "source",
+ "src",
   "class",
   "id",
   "type",
@@ -25,7 +25,7 @@ export function dynamicAttr() {
          }
         if(attr == "class") {
            el.className = value;
-        }else if(attr == "source") {
+        }else if(attr == "src") {
           el.src = value
           el.databinding = "value"
         }else{
