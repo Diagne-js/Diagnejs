@@ -3,6 +3,7 @@ import { welcome } from './components/welcome.js'
 
 
 v.theme = "light"
+v.type = 'number'
 v.content = {
   title: "You did it",
   body: `You have joined the freedom and clear js framework       <br> Below is the steps to use 
@@ -22,6 +23,7 @@ export const App = () => {
        d-click="changeTheme"
        >change theme from { theme }</button>
        ${welcome(v.content)}
+       <input d-type="type" />
     </main>
   `
 

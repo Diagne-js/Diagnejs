@@ -1,7 +1,7 @@
 import {v} from '../v/v.js'
 import {observe} from '../customMethods/proxy.js'
-import {renderObjectsTree,catchAttributes} from '../utils/utils.js'
-import {catchDynamicV} from '../v/v.js'
+import {renderObjectsTree} from '../utils/utils.js'
+import {dynamicAttr} from './dynamicAttributes.js'
 
 export default function dFor() {
   document.querySelectorAll("[d-for]").forEach(function(el) {
@@ -12,7 +12,6 @@ export default function dFor() {
    let iterable = v[iterableStr]
   
    const innerBase = el.parentElement.innerHTML
-   
   el.parentElement.innerHTML = addEls(iterable,el.parentElement,itemName,innerBase)
   
    el.style.display="none"

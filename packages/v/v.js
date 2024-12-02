@@ -25,7 +25,7 @@ function makeReactive(obj,callback) {
   });
 
     for(const attr of attributes){
-  document.querySelectorAll(`[d-${attr} = '[ ${variableName} ]']`).forEach(el => {
+  document.querySelectorAll(`[d-${attr} = '${variableName}']`).forEach(el => {
         if(attr === "src") {
       const ref = oldValue.slice(oldValue.indexOf("/"),oldValue.length) 
           if(el.src.includes(ref)) {
