@@ -1,5 +1,6 @@
 import {routes} from '../../src/routes.js'
 import {catchDynamicV} from '../v/v.js'
+import {dFor} from '../attributes/attributes.js'
 
 
 export const navigate = (path) => {
@@ -15,6 +16,7 @@ const renderRoute = (path) => {
     return
   }
   document.querySelector("#view").innerHTML = catchDynamicV(content())
+  dFor()
 };
 
 // Event delegation for efficient event handling
