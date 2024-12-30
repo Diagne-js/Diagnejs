@@ -1,5 +1,3 @@
-import {v} from '../../packages/module.js'
-
 
 
 export function getStarted() {
