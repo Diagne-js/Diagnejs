@@ -1,17 +1,18 @@
-export function renderObjectsTree(variable,name) {
+const renderObjectsTree = (variable,name) => {
   let tree = []
+  if(name) tree.push({name: name, value: variable})
   for(const key of Object.keys(variable)){
     let branch
     if(!Array.isArray(variable)) {
      if(name) {
-       tree.push({ str: name + "." + key, value: variable[key]})
+       tree.push({ name: name + "." + key, value: variable[key]})
        branch = name + "." + key
      }else{
-       tree.push({ str: key, value: variable[key]})
+       tree.push({ name: key, value: variable[key]})
        branch = key
      }
     }else if(Array.isArray(variable)) {
-        tree.push({ str: name + "[" + key + "]", value: variable[key]})
+        tree.push({name: name + "[" + key + "]", value: variable[key]})
         branch = name + "[" + key + "]"
     }
     if(typeof variable[key] == 'object' ) {
@@ -20,3 +21,4 @@ export function renderObjectsTree(variable,name) {
   }
   return tree
 }
+export default renderObjectsTree
