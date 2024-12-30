@@ -1,15 +1,25 @@
-import {v} from '../v/v.js'
+export const bindStore = []
 
-export default function dBind() {
-  document.querySelectorAll("[d-bind]").forEach((el) => {
-    const bindTo = el.getAttribute("d-bind");
-   if(el == "[object HTMLInputElement]") {
-      el.oninput = () => {
-        v[bindTo] = el.value
-      }
-      setInterval(() => {
-        if(v[bindTo] != el.value) el.value = v[bindTo]
-      },5)
-    }
-  });
+
+export const newBind = (callback,name) => {
+    
+       const binding = {
+         actions: (el) => {
+            callback(el.value)
+            el.oninput = () => callback(el.value)
+            el.removeAttribute('bind')
+         },
+         name: name
+       }
+       bindStore.push(binding)
+}
+
+
+export const activeBindings = () => {
+  for (let stockedBind of bindStore) {
+     document.querySelectorAll(`[bind = "${stockedBind.name}"]`)
+     .forEach((el) => {
+        stockedBind.actions(el)
+     })
+  }
 }
