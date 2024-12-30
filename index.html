@@ -2,12 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Page title</title>
-  <link rel="stylesheet" href="./src/styles/global.css">
+  <meta name="description" content="my description" />
+  <meta name="keywords" content="my keywords" />
+  <title>diagne js</title>
+   <link rel="stylesheet" href="./src/global.css">
 </head>
 <body>
-   <!-- hi -->
-    <div id="app"></div>
-   <script src="./packages/diagne.js" type="module"></script>
+  <div id="app"></div>
+  
+  <script type="importmap">
+  {
+    "imports": {
+      "diagne": "./diagne/module.js"
+    }
+  }
+ </script>
+  <script type="module" src="./src/main.js"></script>
+
 </body>
 </html>
