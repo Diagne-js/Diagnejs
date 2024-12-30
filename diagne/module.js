@@ -1,11 +1,19 @@
-import {observe} from './customMethods/proxy.js'
-import {v,set} from './v/v.js'
-import { addDescription, addKeywords } from './seo/description-and-keywords.js'
+import {
+    create,
+    set,
+    watchUpdates,
+    render
+    
+} from './reactivity/reactivity.js'
 
-export {
-    observe,
-    v,
-    set, 
-    addDescription, 
-    addKeywords
-}
+
+import {seo} from './seo/seo.js'
+
+import {newEvent} from './custom-methods/events.js'
+
+
+import {newBind}  from './attributes/attributes.js'
+
+export {create,set,watchUpdates,seo,newEvent,newBind}
+
+export {getPageDatas} from './custom-methods/page-datas.js'
