@@ -1,47 +1,154 @@
-import {v} from '../v/v.js'
-import {observe} from '../customMethods/proxy.js'
-import {renderObjectsTree} from '../utils/utils.js'
-import {dynamicAttr} from './dynamicAttributes.js'
+import {store} from '../reactivity/reactivity.js'
+import renderObjectsTree from '../utils/render-tree-of-object.js'
+import {
+  dShow,
+  dHide,
+  activeBindings,
+  dIf,
+  useDynamicsAttributes
+} from '../attributes/attributes.js'
 
-export default function dFor() {
-  document.querySelectorAll("[d-for]").forEach(function(el) {
-   let [itemName, iterableStr] = el.getAttribute("d-for").split(" in ")
-   iterableStr = iterableStr.trim()
-   itemName = itemName.trim()
-   
-   let iterable = v[iterableStr]
+
+
+export const variablesUsedBy_dFor = []
+
+const attributes = ['show','hide','if','d-style']
+
+export const dFor = (l=null) => { 
+  const targets = document.querySelectorAll('[for]')
   
-   const innerBase = el.parentElement.innerHTML
-  el.parentElement.innerHTML = addEls(iterable,el.parentElement,itemName,innerBase)
+  targets.forEach(target => {
+    const value = target.getAttribute("for");
+    
+    let split = value.split(" ");
+    let itemName = split[0]
+    let iterable = store.find(s => s.name == split[2]).value
+    let iterableStr = split[2].trim()
+    
+    let tracker = iterableStr
+      
+     const storedHtml = target.outerHTML
+     
+      
+    target.removeAttribute("for");
+    
+    const innerBase = target.outerHTML
+    
+    const storeLoop = {
+     name: iterableStr,
+     itemName: itemName,
+     length: iterable.length,
+     template: storedHtml
+    }
   
-   el.style.display="none"
-  observe(() => {
-     dFor()
-  },iterableStr)
- })
-}
-
-
-function addEls(obj,parent,itemName,innerBase) {
-const inner = innerBase
-let finalHtml = ''
-
-for (let [index,item] of obj.entries()) {
-
-  if (typeof item == 'object'){
-      const tree = renderObjectsTree(item,itemName)
-      for(let branch of tree) {
-         innerBase = innerBase.replaceAll(`{ ${branch.str} }`,branch.value)
-     }
-   finalHtml += innerBase
-   innerBase = inner
-  }
-  else{
-    innerBase = innerBase.replaceAll(`{ ${itemName} }`, item)
-    finalHtml += innerBase
-    innerBase = inner
+    let html = '';
+    
+    
+    if (!l) {
+      variablesUsedBy_dFor.push(storeLoop)
+    } else {
+      variablesUsedBy_dFor[l] = storeLoop
+    }
+    
+    if (iterable.length == 0) {
+      const template = `<div data-for='${tracker}'></div>`
+      target.insertAdjacentHTML('beforebegin', template);
+      target.remove();
+      
+      return;
+    }
+    
+    
+    
+for (let i in iterable) {
+ const item = iterable[i]
+ let currentHTML = innerBase
+      
+ if (typeof item == 'object') {
+     const tree = renderObjectsTree(item,itemName)
+    for (let j in tree){
+       const branch = tree[j]
+       if (innerBase.includes(branch.name)) {
+                
+        const binding = iterableStr+`[${i}]`+branch.name.slice(branch.name.indexOf('.'),branch.name.length)
+                
+         currentHTML = currentHTML.replaceAll(`{${branch.name}}`,
+          `<span data-binding="${binding}">
+           ${branch.value}</span>`);
+           
+           currentHTML = includesAttributes(currentHTML, branch.name, itemName, iterableStr, i)
+           
+           currentHTML = currentHTML.replaceAll(`[${branch.name}]`,branch.value);
+           ''
+          
+        }
+    }
+   for (var n = 1; n < 20; n++) {
+        i = parseFloat(i)
+     currentHTML = currentHTML.replaceAll(`::i+${n}`, i+n )
+     currentHTML = currentHTML.replaceAll(`::i-${n}`, i-n )
    }
-   
+      currentHTML = currentHTML.replaceAll('::i', i )
+      html += currentHTML 
+      }else{
+        const binding = iterableStr+`[${i}]`
+        currentHTML = innerBase.replaceAll(`{${itemName}}`, `<span data-binding="${binding}">${item}</span>`);
+        for (var n = 1; n < 20; n++) {
+        i = parseFloat(i)
+     currentHTML = currentHTML.replaceAll(`::i+${n}`, i+n )
+     currentHTML = currentHTML.replaceAll(`::i-${n}`, i-n )
+   }
+      currentHTML = currentHTML.replaceAll('::i', i )
+    
+        html += currentHTML;
+      }
+      
+      
+    }
+    
+    
+    const template = `
+      <div data-for='${tracker}'>
+      ${html}
+      </div>
+    `
+    
+    
+    target.insertAdjacentHTML('beforebegin', template);
+    
+    target.remove();
+    
+  });
+  dShow();
+  dHide();
+  activeBindings()
+  useDynamicsAttributes()
 }
-   return finalHtml
+
+
+const includesAttributes = (str,b,itemName,iterable, i) => {
+  for(const attr of attributes){
+  if(str.includes(`${attr}=`)) {
+    const catchProps = new RegExp(`${attr}="([^"]*)"|${attr}='([^']*)'`, 'g')
+    const catchValue = /"([^"]*)"|'([^']*)'/;
+    
+    let catches = str.match(catchProps)
+   
+    for(const catched of catches){
+       
+       let value = catched.match(catchValue)[0]
+       
+       
+      if (value.includes(b) && !str.includes(`[${value}]`)) {
+         value = 
+         value.replaceAll(`[${itemName}`, `[${iterable}[${i}]`)
+       }
+       if (!str.includes(`${attr}='${value}'`)) {
+       str = str.replace(catched, `${attr}=${value}`) 
+       }
+    }
+  }
+  }
+  
+  return str
 }
