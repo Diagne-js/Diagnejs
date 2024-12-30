@@ -1,7 +1,16 @@
-import dIf from "./d-if.js"
-import dBind from "./d-bind.js"
-import dFor from "./d-for.js"
-import setEvents from "./events.js"
-import {dynamicAttr,attributes} from './dynamicAttributes.js'
+export {dFor,variablesUsedBy_dFor} from './d-for.js'
 
-export {dIf,dBind,dFor,setEvents, dynamicAttr,attributes}
+export {dHide} from './d-hide.js'
+
+export {dShow} from './d-show.js'
+
+export {newBind, bindStore, activeBindings} from './d-bind.js'
+
+export {dIf, dIfStore} from './d-if.js'
+
+export {renderCorrectPath} from './correct-path.js'
+
+
+export { 
+    useDynamicsAttributes, 
+    variablesUsedByDynAttributes} from './dynamic-attributes.js'
