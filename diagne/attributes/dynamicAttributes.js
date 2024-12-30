@@ -1,54 +1,65 @@
-import {v} from '../v/v.js'
-import {renderObjectsTree} from '../utils/utils.js'
+import {store} from '../reactivity/store.js'
+import {dEval} from '../utils/d-eval.js'
 
-export const attributes = [
- "src",
-  "class",
-  "id",
-  "type",
-  "placeholder",
-  "value",
-  "href",
-  "style"
+
+export const targetAttributes = [
+   'class',
+   'id',
+   'value',
+   'type',
+   'placeholder',
+   'disabled',
+   'style'
 ]
 
 
-
-export function dynamicAttr(aVal = false) {
-  attributes.forEach(attr => {
-     document.querySelectorAll(`[d-${attr}]`).forEach(el => {
-    
-      let value;
-       if(!aVal) value = el.getAttribute(`d-${attr}`)
-       if(aVal) value = aVal
-       let tree = renderObjectsTree(v,false)
-       for(const branch of tree){
-          value = value.replaceAll(branch.str,branch.value)
-       }
+export const variablesUsedByDynAttributes = []
 
 
-       if(!value.includes(":")) {
-           if(attr == "class") {
-              el.className = value;
-           }else if(attr == "src") {
-              el.src = value
-           }else{
-             el[attr] = value;
-           }
-       }else{
-           let [condition, val] = value.spli(":")
-           condition = condition.trim()
-           if(v[condition]){
-               if(attr != "class") el[attr] = val
-               if(attr == "class") el.className = val
-           }else{
-               if(attr == "class") el[attr] = ''
-               if(attr == "class") el[attr] = ''
-           }
-       }
+export const useDynamicsAttributes = () => {
+for(const attr of targetAttributes){
+   document.querySelectorAll(`[d-${attr}]`).forEach(el => {
+      const val = el.getAttribute(`d-${attr}`)
+      
+      let condition = 'the default value: true'
+      let bruteCondition = condition
+      let value = val
+      
+      if (val.includes('=>')) {
+        condition = dEval(val.split('=>')[0])
+        bruteCondition = val.split('=>')[0].trim()
+        value = val.split('=>')[1].trim()
+      }
+      
+      if (attr == 'disabled') {
+        condition = dEval(val)
+        bruteCondition = val
+        
+      }
+      
+      const dynamicValue = attr != 'disabled' ? 
+       store.find(s => s.name == value).value  : condition
+  
+      if (condition) {
 
-
-     })
-  })
- 
+        if(attr != 'disabled') el.setAttribute(attr, dynamicValue)
+        if(attr == 'disabled') el.disabled = true
+      }else{
+        if(attr == 'disabled') el.disabled = false
+      }
+      
+      el.removeAttribute('d-'+ attr)
+      
+      variablesUsedByDynAttributes.push({
+           prop: attr,
+           el: el,
+           condition: bruteCondition,
+           value: dynamicValue,
+           variableName: attr != 'disabled' ? 
+              store.find(s => s.name == value).name :
+              null
+      })
+      bruteCondition = ''
+   })
+}
 }
