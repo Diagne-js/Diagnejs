@@ -1,4 +1,4 @@
-import { create, set, newEvent } from 'diagne'
+import { create, set, newEvent } from 'diagne' 
 
 export const App = () => {
   let board = create(['','','','','','','','',''],'board')
@@ -101,7 +101,8 @@ export const App = () => {
      <button for='state of states' click='jumpTo: ::i'>
          move to #{state.id}
      </button>
-
-     <getStarted/>
+     
+     <GetStarted/>
+     
   `
 }                                                                                                                                                                                                                                                                                                                                                                                                                              

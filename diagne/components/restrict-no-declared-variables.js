@@ -17,6 +17,8 @@ export const restrictNoDeclaredVariables = (component) => {
    
    const internalVariables = []
    
+   if(!declarations && dynamicValues) throw new ReferenceError('you have use an undeclared variable in your html part')
+   
    for (let declaration of declarations) {
      const name = declaration.slice(
               declaration.indexOf(' '),
@@ -28,6 +30,7 @@ export const restrictNoDeclaredVariables = (component) => {
     
    
    for (let dynamicValue of dynamicValues) {
+     if(!dynamicValue) return
      const name = dynamicValue.slice(1, dynamicValue.length-1)
       const correspondingValueFromInternalVar = 
       internalVariables.find(v => v == name) 

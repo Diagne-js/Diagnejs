@@ -17,3 +17,5 @@ import {newBind}  from './attributes/attributes.js'
 export {create,set,watchUpdates,seo,newEvent,newBind}
 
 export {getPageDatas} from './custom-methods/page-datas.js'
+
+export {reUse} from './components/re-use.js'

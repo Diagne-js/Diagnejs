@@ -11,21 +11,18 @@ export const findComponents = async (html) => {
   if (!match) return html;
 
   for (const componentTag of match) {
-    const name = componentTag.slice(1, componentTag.indexOf("/>")).toLowerCase();
+    const name = componentTag.slice(1, componentTag.indexOf("/>"));
 
     const path = `../../src/components/${name}.js`;
 
     await import(path)
       .then((module) => {
-        const savedStore = [...store]
-        console.log(savedStore)
-        store.length = 0
+       // const savedStore = [...store]
+     //   store.length = 0
         let component = bindValues(module[name]());
-        for (let s of savedStore) {
-          store.push(s)
-        }
         
-       //restrictNoDeclaredVariables(module[name])
+        
+       restrictNoDeclaredVariables(module[name])
         html = html.replaceAll(componentTag, component);
       })
       .catch((err) => console.error(err));
