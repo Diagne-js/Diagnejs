@@ -13,6 +13,7 @@ import {store} from '../reactivity/store.js'
 
 
 export const update = (name, newValue) => {
+  
  document.querySelectorAll(`[data-binding="${name}"]`).forEach((el) =>{
     el.innerText = newValue
   })
@@ -94,6 +95,7 @@ const updateShow = (key) => {
 
 
 const updateValuesOfDynamicsValue = (key,newValue) => {
+  
    for (let i in variablesUsedByDynAttributes) {
      const v = variablesUsedByDynAttributes[i]
      if (v.prop == 'disabled') {
@@ -101,7 +103,13 @@ const updateValuesOfDynamicsValue = (key,newValue) => {
        if (dEval(v.condition)) {
          v.el.disabled = true
        }
-     }else if (v.variableName == key && 
+     }else if (v.variableName == "anything") {
+         if (dEval(v.condition)) {
+             v.el.setAttribute(v.prop, v.value)
+         }else{
+           v.el.setAttribute(v.prop, '')
+         }
+      }else if (v.variableName == key && 
           v.condition == 'the default value: true') {
                   v.el.setAttribute(v.prop, newValue)
       }else if (v.variableName != key && 

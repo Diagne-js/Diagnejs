@@ -1,11 +1,11 @@
 import { create, set, newEvent } from 'diagne' 
 
 export const App = () => {
-  let board = create(['','','','','','','','',''],'board')
-  let player = create('X','player')
-  let isWinner = create(false, 'isWinner')
+  let board = create(['','','','','','','','',''])
+  let player = create('X')
+  let isWinner = create(false)
   
-  let states = create([],'states')
+  let states = create([])
   
   const winPositions = [
      [0,1,2],
@@ -18,7 +18,7 @@ export const App = () => {
      [2,4,6]
   ]
   
-  let wP = create(['','','','','','','','',''],'wP')
+  let wP = create(['','','','','','','','',''])
   
   
   const checkWin = () => {
@@ -39,7 +39,7 @@ export const App = () => {
     }
   }
   
-  newEvent((i) => {
+  newEvent('play', (i) => {
     if (isWinner) return
     i = parseFloat(i[0])
     if(board[i] == '') { 
@@ -55,10 +55,10 @@ export const App = () => {
         ])
         set(() => player = player == 'X' ? 'O' : 'X')
     }
-  },'play')
+  })
   
   
-  newEvent((target) => {
+  newEvent('jumpTo',  (target) => {
     if (target[0] != 'start') {
       const id = parseFloat(target[0])
       const state = states[id]
@@ -77,7 +77,7 @@ export const App = () => {
        set(() => states = [])
      }
      set(() => isWinner = false)
-  },'jumpTo')
+  })
   
   
   
@@ -85,10 +85,9 @@ export const App = () => {
      <h1>Morpion game</h1>
      
      
-    <p if='[isWinner]'>{player} has lose</p>
+    <p if='isWinner'>{player} has lose</p>
      <p else>next player is {player}</p>
 
-     
      <section class='morpion'>
         <div 
             for='case from board'
@@ -103,6 +102,7 @@ export const App = () => {
      </button>
      
      <GetStarted/>
+     
      
   `
 }                                                                                                                                                                                                                                                                                                                                                                                                                              

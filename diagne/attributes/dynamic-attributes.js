@@ -17,7 +17,9 @@ export const variablesUsedByDynAttributes = []
 
 
 export const useDynamicsAttributes = () => {
+  
 for(const attr of targetAttributes){
+  
    document.querySelectorAll(`[d-${attr}]`).forEach(el => {
       const val = el.getAttribute(`d-${attr}`)
       
@@ -25,11 +27,13 @@ for(const attr of targetAttributes){
       let bruteCondition = condition
       let value = val
       
+      
       if (val.includes('=>')) {
-        condition = dEval(val.split('=>')[0])
+        condition = dEval(val.split('=>')[0].trim())
         bruteCondition = val.split('=>')[0].trim()
         value = val.split('=>')[1].trim()
       }
+      
       
       if (attr == 'disabled') {
         condition = dEval(val)
@@ -37,9 +41,20 @@ for(const attr of targetAttributes){
         
       }
       
-      const dynamicValue = attr != 'disabled' ? 
-       store.find(s => s.name == value).value  : condition
-  
+      let unDynamicValue = false
+      
+      
+      let dynamicValue
+      if (store.find(s => s.name == value)) {
+         dynamicValue = store.find(s => s.name == value).value
+      }else if (value[0] == "'" || value[0] == `"`) {
+           value = value.slice(1, value.length - 1).trim()
+           dynamicValue = value
+           unDynamicValue = true
+       }
+      
+      
+      
       if (condition) {
 
         if(attr != 'disabled') el.setAttribute(attr, dynamicValue)
@@ -55,9 +70,9 @@ for(const attr of targetAttributes){
            el: el,
            condition: bruteCondition,
            value: dynamicValue,
-           variableName: attr != 'disabled' ? 
-              store.find(s => s.name == value).name :
-              null
+           variableName: unDynamicValue == false ?
+           store.find(s => s.name == value).name :
+           'anything'
       })
       bruteCondition = ''
    })

@@ -1,9 +1,11 @@
-import {reUse} from 'diagne'
+import {reUse, create} from 'diagne'
 
 export const GetStarted = () => {
-  const player = ''
+  
+  const player = create('hi')
+  
   return`
-     {player}
+      {player}
      <section class="getStarted">
          learn diagne.js at <a href="https://diagnejs.netlify.app">diagne.js website</a>
       </section>

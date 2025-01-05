@@ -3,7 +3,7 @@ import {dEval} from '../utils/d-eval.js'
 export const eventsStore = []
 
 
-export const newEvent = (handler,name) => {
+export const newEvent = (name, handler) => {
    eventsStore.push({name: name, handler: handler})
 }
   

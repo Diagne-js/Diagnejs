@@ -25,7 +25,6 @@
   grid-template-columns:1fr 1fr 1fr;
   grid-template-rows: 100px 100px 100px;
   gap:5px;
-  border:solid 4px #030e1e ;
   div{
      border:solid gray 1px;
      border-radius: 5px ;

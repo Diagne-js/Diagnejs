@@ -1,8 +1,9 @@
-import {create, set} from './reactive.js'
-import {render} from './render-dynamics-values.js'
-import {watchUpdates} from './watch-effect.js'
-import {store} from './store.js'
-import {bindValues} from './bind-values.js'
+export {set} from './set.js'
+export {create, addNames} from './create.js'
+export {render} from './render-dynamics-values.js'
+export {watchUpdates} from './watch-effect.js'
+export {store} from './store.js'
+export {bindValues} from './bind-values.js'
 
 
-export {create,set,render,watchUpdates,store,bindValues}
+

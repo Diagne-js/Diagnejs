@@ -5,23 +5,23 @@ import {store} from '../reactivity/store.js'
 
 export const dEval = (str) => {
 const items = []
+const splited = str.split(" ")
 
-for(let item of str.split(" ")){
-  item = item.trim()
+
+
+
+
+
+for(let item of splited) {
+        item = item.trim()
+   
+       const matchedValue = store.find(s => s.name == item)
   
-        if(item[0] == "[" && item[item.length-1] == "]") {
-           const name = item.slice(1, item.length-1 )
-          
-           for (let i in store) {
-               let stocked = store[i]
-          
-               if (stocked.name == name) {
-                   items.push(store[i].value)
-                   break
-               }
-           }
+        if(matchedValue) {
+            items.push(matchedValue.value)
+         }
        
-         }else if (typeof parseFloat(item) == 'number' && 
+         else if (typeof parseFloat(item) == 'number' && 
                   !isNaN(parseFloat(item))) {
                     
             items.push(parseFloat(item))
@@ -35,9 +35,23 @@ for(let item of str.split(" ")){
            items.push(true)
          }
          
-         else{
-             items.push(item)
+         else if(item.startsWith("'") || item.startsWith(`"`)){
+          // console.log(item)
+             items.push(item.slice(1, item.length - 1))
          }
+         
+         else if (item == 'undefined') {
+             items.push(undefined)
+         }
+         
+         else if (item == 'null') {
+         elitems.push(null)
+         }
+         
+         else{
+           items.push(item)
+         }
+         
 }
     
     const finalExp = unionOfItems(items)

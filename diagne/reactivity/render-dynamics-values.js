@@ -15,13 +15,21 @@ import {findComponents} from '../components/find-components.js'
 
 import {bindValues} from './bind-values.js'
 
+import {addNames} from './create.js'
 
 
-export const render = async (str,selector) => {
+
+
+export const render = async (app,selector) => {
+  
+  addNames(app)
+  
+  let str = app()
   
   str = bindValues(str)
   
   str = await findComponents(str)
+  
   document.querySelector(selector).innerHTML = str
   renderCorrectPath()
   dFor()

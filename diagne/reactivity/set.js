@@ -1,38 +1,14 @@
 import { effects} from './watch-effect.js'
 import {update} from './update.js'
 import {store} from './store.js'
-import renderObjectsTree from '../utils/render-tree-of-object.js'
+import {renderObjectsTree, transformType} from '../utils/utils.js'
 
 
 
-export const create = (init,name) => {
- 
- let existingAlright = false
- 
-  for (let i in store) {
-    const stocked = store[i]
-    if (stocked.name == name) {
-      throw new SyntaxError(`the variable ${name} is already assigned`)
-    }
-  }
-  if(!existingAlright) store.push({value: init, name: name})
-  
-   if(typeof init == 'object' && Object.keys(init).length != 0) {
- 
-   for(let b of renderObjectsTree(init,name)){
-      store.push({value: b.value, name: b.name})
-   }
- }
-  
-  return init
-}
-  
-  
-  
-  
   
 export const set = (callback, options = null) => {
 
+  
   const setter = callback();
    
   const stringify = `${callback}`
