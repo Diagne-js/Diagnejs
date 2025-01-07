@@ -9,14 +9,12 @@ import {
 import {addEvents} from '../custom-methods/events.js'
 import {dEval} from '../utils/d-eval.js'
 import {store} from '../reactivity/store.js'
+import {updateHTML} from './updateHtml.js'
 
 
 
-export const update = (name, newValue) => {
-  
- document.querySelectorAll(`[data-binding="${name}"]`).forEach((el) =>{
-    el.innerText = newValue
-  })
+export const update = (name, newValue, componentName = null) => {
+  updateHTML(name, newValue, componentName)
   
   variablesUsedBy_dFor.find((v,i) => {
    if (v.name == name && Object.keys(newValue).length != v.length) {

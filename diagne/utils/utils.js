@@ -1,8 +1,9 @@
 import renderObjectsTree from './render-tree-of-object.js'
-import {dEval} from './d-eval.js'
-import {transformType} from './transform-type.js'
+export {dEval} from './d-eval.js'
+export {dIndexOf} from './d-index-of.js'
 
+export {renderObjectsTree}
 
-export {renderObjectsTree,dEval,transformType}
+export {changedFrom} from './change-from.js'
 
 export {specialsAttributes} from './specials-attributes.js'

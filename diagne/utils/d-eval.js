@@ -7,11 +7,6 @@ export const dEval = (str) => {
 const items = []
 const splited = str.split(" ")
 
-
-
-
-
-
 for(let item of splited) {
         item = item.trim()
    

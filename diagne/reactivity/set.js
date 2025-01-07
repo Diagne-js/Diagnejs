@@ -1,13 +1,34 @@
 import { effects} from './watch-effect.js'
 import {update} from './update.js'
-import {store} from './store.js'
-import {renderObjectsTree, transformType} from '../utils/utils.js'
-
+import {store as vStore} from './store.js'
+import {renderObjectsTree, dIndexOf} from '../utils/utils.js'
+import {componentsName} from '../components/find-components.js'
 
 
   
 export const set = (callback, options = null) => {
+  
+  let changeFrom = new Error()
+  changeFrom = changeFrom.stack.slice(
+              dIndexOf(changeFrom.stack,' at ', 2),
+              dIndexOf(changeFrom.stack,' at ', 3),
+      )
+      
+  changeFrom = changeFrom.slice(
+                changeFrom.lastIndexOf('/')+1,
+                changeFrom.indexOf('.js')
+     ).trim()
+     
 
+ let store = vStore
+ 
+ let componentName = null
+ 
+ if (changeFrom != 'app') {
+     const i = store.findIndex(s => s.componentName === changeFrom)
+     componentName = store[i].componentName
+     store = store[i].variables
+ }
   
   const setter = callback();
    
@@ -46,7 +67,7 @@ export const set = (callback, options = null) => {
  for(let i in store){
     const stocked = store[i]
   
-    if (typeof newValue == 'object' && 
+    if (!stocked.componentName && typeof newValue == 'object' && 
         Object.keys(newValue).length > 
         Object.keys(stocked.value).length && key == stocked.name) {
         
@@ -62,7 +83,9 @@ export const set = (callback, options = null) => {
   } 
   
   
-  update(key,newValue)
+  
+  if(componentName) update(key,newValue, componentName)
+  if(!componentName) update(key,newValue)
   
   for(const effect of effects){
     effect()

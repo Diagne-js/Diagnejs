@@ -57,11 +57,12 @@ export const restrictNoDeclaredVariables = (component) => {
               
               if (specAttr == 'for') {
                 
-                const variable = value.split(' ')[2]
+                const [itemName, o, variable] = value.split(' ')
                 const correspondingValue = 
                    internalVariables.find(v => v == variable)
                   if (correspondingValue) {
-                    
+                    internalVariables.push(itemName)
+                    continue
                   }else{
                     throw new ReferenceError(variable + ' is not defined')
                   }
@@ -98,5 +99,7 @@ export const restrictNoDeclaredVariables = (component) => {
    if (externeVariableIsUsed.state == true) {
       throw new ReferenceError(externeVariableIsUsed.vName + ' is not defined')
    }
+   
+   return 
    
 }

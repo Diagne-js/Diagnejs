@@ -9,7 +9,9 @@ export const targetAttributes = [
    'type',
    'placeholder',
    'disabled',
-   'style'
+   'style',
+   'href',
+   'src'
 ]
 
 
@@ -43,9 +45,9 @@ for(const attr of targetAttributes){
       
       let unDynamicValue = false
       
-      
       let dynamicValue
-      if (store.find(s => s.name == value)) {
+      
+       if (store.find(s => s.name == value)) {
          dynamicValue = store.find(s => s.name == value).value
       }else if (value[0] == "'" || value[0] == `"`) {
            value = value.slice(1, value.length - 1).trim()

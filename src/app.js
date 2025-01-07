@@ -84,7 +84,6 @@ export const App = () => {
   return `
      <h1>Morpion game</h1>
      
-     
     <p if='isWinner'>{player} has lose</p>
      <p else>next player is {player}</p>
 
@@ -101,7 +100,7 @@ export const App = () => {
          move to #{state.id}
      </button>
      
-     <GetStarted/>
+     <GetStarted />
      
      
   `
