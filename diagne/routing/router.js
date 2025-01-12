@@ -1,14 +1,16 @@
 import {routes} from '../../src/routes.js'
-import {render, store} from '../reactivity/reactivity.js'
+import {render, store, resetData} from '../reactivity/reactivity.js'
 import {gettingToPageDatasStore} from '../custom-methods/page-datas.js'
 import {variablesUsedBy_dFor} from '../attributes/attributes.js'
-
+import {create,set,watchUpdates,seo,event,newBind, getPageDatas, reUse} from '../module.js'
 
 
 const pageDatas = {
   toNewPage: false,
   path: '/'
 }
+
+export const pages = []
 
 
 const addDynamicsRoutes = () => {
@@ -41,7 +43,6 @@ addDynamicsRoutes()
 
 const findDLinks = () => {
   document.querySelectorAll('a').forEach(link => {
-    
      if(link.hasAttribute("d-link")) {
        
         const value = link.getAttribute('href')
@@ -59,7 +60,6 @@ const findDLinks = () => {
                event.preventDefault();
                navigate(value);
                
-               
         })
         link.removeAttribute('d-link')
      }
@@ -69,6 +69,7 @@ const findDLinks = () => {
 
 export const navigate = (path) => {
   if(window.location.pathname == path) return
+  
   window.history.pushState({}, '', path);
   renderRoute(path);
 };
@@ -84,19 +85,19 @@ const renderRoute = (path) => {
           the path ${path} is not set
       `}
   
-    let content = route.content ;  
+    let content = route.content ; 
 
       if(route.path == '*') {
          throw new RenferenceError(`set up correctly the route ${path} at src/routes.js`)
          return
        }
-       store.length = 0
-       variablesUsedBy_dFor.length = 0
+       
+       resetData()
        
        if(route.type == "dynamic") {
-          render(content(route.ref), '#view')
+          render(content(route.ref), '#view', content)
         }else{
-           render(content(), '#view')
+           render(content, '#view')
         }
         pageDatas.toNewPage = true
         pageDatas.path = path

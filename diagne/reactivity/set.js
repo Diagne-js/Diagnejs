@@ -23,11 +23,27 @@ export const set = (callback, options = null) => {
  let store = vStore
  
  let componentName = null
- 
- if (changeFrom != 'app') {
+
+ if (!changeFrom.includes('Page') && changeFrom != 'app') {
      const i = store.findIndex(s => s.componentName === changeFrom)
      componentName = store[i].componentName
      store = store[i].variables
+ }
+ if (typeof callback == 'string') {
+   const target = callback 
+   const i = store.findIndex(s => s.name == target)
+   const newValue = store[i].setter()
+   
+   store[i].value = newValue 
+   
+   if(componentName) update(target,newValue, componentName)
+   if(!componentName) update(target,newValue)
+  
+   if(!effects) return
+   for(const effect of effects){
+      effect()
+   }
+   return newValue
  }
   
   const setter = callback();
@@ -82,11 +98,10 @@ export const set = (callback, options = null) => {
     }
   } 
   
-  
-  
   if(componentName) update(key,newValue, componentName)
   if(!componentName) update(key,newValue)
   
+  if(!effects) return
   for(const effect of effects){
     effect()
   }

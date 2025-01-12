@@ -1,6 +1,5 @@
 import {dEval} from '../utils/d-eval.js'
 
-const variablesUsedBy_hide = []
 
 export const dHide = () => {
     document.querySelectorAll("[hide]").forEach(el => {

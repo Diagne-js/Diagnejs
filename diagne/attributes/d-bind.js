@@ -2,7 +2,6 @@ export const bindStore = []
 
 
 export const newBind = (callback,name) => {
-    
        const binding = {
          actions: (el) => {
             callback(el.value)

@@ -10,10 +10,13 @@ const declarations = (app) => {
     
     return matches
 }
-  
+
+//  <<<<<<<<<_______ 
+//    the function that add the names to all variables declared with    create() to the store
+// _________>>>>>>>>>>>
 export const addNames = (app, prop = null) => {
   
-  let localStore = store
+  let localStore = [...store]
   
   let i
 
@@ -22,28 +25,27 @@ export const addNames = (app, prop = null) => {
   
     localStore = store[i].variables
   }
-  
-    
+  if(!declarations(app)) return
     for(const declaration of declarations(app)){
          if(declaration.includes("create(")) {
               const name = declaration.slice(declaration.indexOf(" "), 
                            declaration.indexOf("=")).trim()
-              localStore.push({name: name})
+          if(!localStore.find(lS => lS.name == name)) localStore.push({name: name})
          }
     }
   if (prop) {
     store[i].variables = [...localStore]
     return
   }
-  store.push(...localStore)
-  
+    store.push(...localStore)
 }
 
 
+//      <<<<<<<<_________ the create function ------->>>>>>>
+
 let createUsedTime = 0
 
-
-export const create = (init) => {
+export const create = (init, options = null) => {
   
   let changeFrom = new Error()
   changeFrom = changeFrom.stack.slice(
@@ -58,28 +60,30 @@ export const create = (init) => {
   
     let localStore = [...store]
     
-    
     let i = null
 
-    if (changeFrom != 'app') {
+    if (!changeFrom.includes('Page') && changeFrom != 'app') {
       i = store.findIndex(s => s.componentName === changeFrom)
       localStore = localStore[i].variables
-      if (!localStore[0].value) {
-        createUsedTime = 0
-      }
     } 
-     
-  if (localStore.length == 1 && changeFrom == 'app') {
+    
+  if (!localStore[0].value){
       createUsedTime = 0
   }
   
   
-  
-  const correspondingItem = localStore[createUsedTime]
+   const correspondingItem = localStore[createUsedTime]
   
    correspondingItem.value = init
    
-   
+   if (options) {
+     if (options.setter) {
+        correspondingItem.setter = options.setter
+     }
+  }
+  
+  
+  
    if(typeof init == 'object' && Object.keys(init).length != 0) {
        for(let b of renderObjectsTree(init,correspondingItem.name)){
           localStore.push({value: b.value, name: b.name})
@@ -92,8 +96,10 @@ export const create = (init) => {
      return init
   }
   
-   store.length = 0;
+  store.length = 0;
    store.push(...localStore)
+   
+console.log(store)
    
   return init
 }

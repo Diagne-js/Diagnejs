@@ -20,15 +20,25 @@ import {addNames} from './create.js'
 
 
 
-export const render = async (app,selector) => {
+export const render = async (app,selector, content = null) => {
   
-  addNames(app)
+   if (content) {
+     
+     addNames(content)
+   }else{
+     addNames(app)
+   }
   
-  let str = app()
-  
+  let str
+  if (content) {
+    str = app
+  }else{
+    str = app()
+  }
   str = bindValues(str)
   
   str = await findComponents(str)
+  
   
   document.querySelector(selector).innerHTML = str
   renderCorrectPath()

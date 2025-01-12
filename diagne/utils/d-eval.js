@@ -4,19 +4,23 @@ import {store} from '../reactivity/store.js'
 
 
 export const dEval = (str) => {
+let localStore = store
+if (store.find(s => s.componentName == str.split('|')[0]) ) {
+  localStore = 
+  store.find(s => s.componentName == str.split('|')[0]).variables
+  
+  str = str.split('|')[1].trim()
+}
 const items = []
 const splited = str.split(" ")
 
 for(let item of splited) {
         item = item.trim()
    
-       const matchedValue = store.find(s => s.name == item)
-  
-        if(matchedValue) {
-            items.push(matchedValue.value)
-         }
+       const matchedValue = localStore.find(s => s.name == item)
+
        
-         else if (typeof parseFloat(item) == 'number' && 
+         if (typeof parseFloat(item) == 'number' && 
                   !isNaN(parseFloat(item))) {
                     
             items.push(parseFloat(item))
@@ -31,8 +35,14 @@ for(let item of splited) {
          }
          
          else if(item.startsWith("'") || item.startsWith(`"`)){
-          // console.log(item)
              items.push(item.slice(1, item.length - 1))
+         }
+         
+         else if(item.match(/[a-zA-Z]/)) {
+           if(!matchedValue){
+              throw new ReferenceError(`${item} is not defined`)
+           }
+            items.push(matchedValue.value)
          }
          
          else if (item == 'undefined') {
@@ -40,7 +50,7 @@ for(let item of splited) {
          }
          
          else if (item == 'null') {
-         elitems.push(null)
+           items.push(null)
          }
          
          else{
@@ -48,7 +58,6 @@ for(let item of splited) {
          }
          
 }
-    
     const finalExp = unionOfItems(items)
     return finalExp
 }

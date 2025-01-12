@@ -18,11 +18,19 @@ export const dFor = (l=null) => {
   const targets = document.querySelectorAll('[for]')
   
   targets.forEach(target => {
-    const value = target.getAttribute("for");
+    let value = target.getAttribute("for");
+    
+    let localStore = store
+    
+    if (value.split('|')[0].trim()[0].match(/[A-Z]/)) {
+       localStore = store.find(s => s.componentName == value.split('|')[0].trim()).variables
+       value = value.split('|')[1].trim()
+    }
+    
     
     let split = value.split(" ");
     let itemName = split[0]
-    let iterable = store.find(s => s.name == split[2]).value
+    let iterable = localStore.find(s => s.name == split[2]).value
     let iterableStr = split[2].trim()
     
     let tracker = iterableStr

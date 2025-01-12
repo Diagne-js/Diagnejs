@@ -9,12 +9,12 @@ import {
 
 import {seo} from './seo/seo.js'
 
-import {newEvent} from './custom-methods/events.js'
+import {event} from './custom-methods/events.js'
 
 
 import {newBind}  from './attributes/attributes.js'
 
-export {create,set,watchUpdates,seo,newEvent,newBind}
+export {create,set,watchUpdates,seo,event,newBind}
 
 export {getPageDatas} from './custom-methods/page-datas.js'
 

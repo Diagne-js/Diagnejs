@@ -18,6 +18,9 @@
   --back-color:#ebebeb;
 }
 
+body{
+  background: white;
+}
 
 [data-for = "board"]{
   width: 300px;

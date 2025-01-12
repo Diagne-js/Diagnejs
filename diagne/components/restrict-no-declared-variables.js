@@ -1,49 +1,33 @@
-import {specialsAttributes} from '../utils/utils.js'
+import {specialsAttributes, renderObjectsTree} from '../utils/utils.js'
+import {store} from '../reactivity/reactivity.js'
 
-export const restrictNoDeclaredVariables = (component) => {
 
+
+export const restrictNoDeclaredVariables = (component,name) => {
    component = component.toString()
-   
-   
-   const findDeclaration = /(const|let)\s+([a-zA-Z_$][\w$]*)\s*=\s*(.+)/g;
-   
    const findDynamicHtml = /\{(.*?)\}/g
-   const findDynamicAttr = /(.*?)/g;
-   
-   
-   
-   const declarations = component.match(findDeclaration)
-   
-    
    
    let dynamicValues = component.match(findDynamicHtml)
-   
-   if (dynamicValues) dynamicValues = dynamicValues.concat(component.match(findDynamicAttr))
-   
-   if(!dynamicValues) return
    
    let externeVariableIsUsed = {state: false}
    
    const internalVariables = []
-   
-   if(!declarations && dynamicValues) throw new ReferenceError('you have use an undeclared variable in your html part')
-   
-   for (let declaration of declarations) {
-     const name = declaration.slice(
-              declaration.indexOf(' '),
-              declaration.indexOf('=')
-       ).trim()
-      internalVariables.push(name)
+
+   const matchedStore = store.find(s => s.componentName == name)
+
+   for (let stocked of matchedStore.variables) {
+      internalVariables.push(stocked.name)
    }
    
-    
+   if(internalVariables.length == 0 && dynamicValues.length > 0) throw new ReferenceError(`${dynamicValues[0]} has been not declared `)
+   
+   if(!dynamicValues) return 
    
    for (let dynamicValue of dynamicValues) {
      const alpha = /[a-zA-Z]/
      if(!dynamicValue) return
      const name = dynamicValue.slice(1, dynamicValue.length-1)
-      const correspondingValueFromInternalVar = 
-      internalVariables.find(v => v == name) 
+      
       
       for (let specAttr of specialsAttributes) {
         const findSpecAttr =
@@ -56,7 +40,6 @@ export const restrictNoDeclaredVariables = (component) => {
             for (let item of items) {
               
               if (specAttr == 'for') {
-                
                 const [itemName, o, variable] = value.split(' ')
                 const correspondingValue = 
                    internalVariables.find(v => v == variable)
@@ -78,7 +61,7 @@ export const restrictNoDeclaredVariables = (component) => {
                   if (correspondingValue) {
                     
                   }else{
-                    throw new ReferenceError(item + ' is not defined')
+                   throw new ReferenceError(item + ' is not defined')
                   }
                   continue;
               }
@@ -87,19 +70,15 @@ export const restrictNoDeclaredVariables = (component) => {
         }
       }
       
+      const correspondingValueFromInternalVar = 
+      internalVariables.find(v => v == name) 
+      
       if (correspondingValueFromInternalVar) {
         
       }else{
-        externeVariableIsUsed.vName = name
-        externeVariableIsUsed.state = true
+        throw new ReferenceError(name + ' is not defined')
         break
       }
    }
-   
-   if (externeVariableIsUsed.state == true) {
-      throw new ReferenceError(externeVariableIsUsed.vName + ' is not defined')
-   }
-   
-   return 
    
 }
