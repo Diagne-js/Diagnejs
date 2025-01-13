@@ -1,9 +1,10 @@
 
 import {store} from '../reactivity/store.js'
+import {methodsIntoHtml} from '../utils/utils.js'
 
 
+export const dEval = (str, verify = true) => {
 
-export const dEval = (str) => {
 let localStore = store
 if (store.find(s => s.componentName == str.split('|')[0]) ) {
   localStore = 
@@ -16,9 +17,6 @@ const splited = str.split(" ")
 
 for(let item of splited) {
         item = item.trim()
-   
-       const matchedValue = localStore.find(s => s.name == item)
-
        
          if (typeof parseFloat(item) == 'number' && 
                   !isNaN(parseFloat(item))) {
@@ -35,14 +33,48 @@ for(let item of splited) {
          }
          
          else if(item.startsWith("'") || item.startsWith(`"`)){
-             items.push(item.slice(1, item.length - 1))
+             item = item.slice(1, item.length - 1)
+            if (item.includes('.')) {
+              let method = item.slice(item.lastIndexOf('.'))
+              item = item.slice(0, item.indexOf(method))
+              
+              method = methodsIntoHtml.find(m => m == method.slice(1))
+              if (method) {
+                items.push(item)
+                continue
+              }
+              method = method.slice(0,method.indexOf('('))
+              items.push(item[method]())
+            }else{
+              items.push(item)
+            }
          }
          
          else if(item.match(/[a-zA-Z]/)) {
-           if(!matchedValue){
-              throw new ReferenceError(`${item} is not defined`)
+           if (item.includes('.')) {
+              let method = item.slice(item.lastIndexOf('.'))
+              item = item.slice(0, item.indexOf(method))
+           const matchedValue = localStore.find(s => s.name == item)
+              method = methodsIntoHtml.find(m => m == method.slice(1))
+              
+             if(!matchedValue){
+             if(verify) throw new ReferenceError(`${item} is not defined`)
+             continue
            }
-            items.push(matchedValue.value)
+              if (!method) {
+                items.push(matchedValue.value)
+                continue
+              }
+              method = method.slice(0,method.indexOf('('))
+              items.push(matchedValue.value[method]())
+            }else{
+             const matchedValue = localStore.find(s => s.name == item)
+             if(!matchedValue){
+             if(verify) throw new ReferenceError(`${item} is not defined`)
+             continue
+           }
+              items.push(matchedValue.value)
+            }
          }
          
          else if (item == 'undefined') {
@@ -102,7 +134,6 @@ for(let item of splited) {
       
       else if(items[1] == "<") {
         finalExp = items[0] < items[2]
-        // if (!finalExp) return false
       }
       
       else if(items[1] == '+'){

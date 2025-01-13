@@ -14,16 +14,15 @@ const declarations = (app) => {
 //  <<<<<<<<<_______ 
 //    the function that add the names to all variables declared with    create() to the store
 // _________>>>>>>>>>>>
-export const addNames = (app, prop = null) => {
+export const addNames = (app, component = null, props) => {
   
   let localStore = [...store]
-  
   let i
 
-  if(prop) {
-    i = store.findIndex(s => s.componentName === prop)
+  if(component) {
+    i = store.findIndex(s => s.componentName === component)
   
-    localStore = store[i].variables
+    localStore = [...store[i].variables]
   }
   if(!declarations(app)) return
     for(const declaration of declarations(app)){
@@ -33,7 +32,9 @@ export const addNames = (app, prop = null) => {
           if(!localStore.find(lS => lS.name == name)) localStore.push({name: name})
          }
     }
-  if (prop) {
+  if (component) {
+    const propsAdded = renderObjectsTree(props,'props')
+    localStore = [...localStore, ...propsAdded]
     store[i].variables = [...localStore]
     return
   }
@@ -97,9 +98,7 @@ export const create = (init, options = null) => {
   }
   
   store.length = 0;
-   store.push(...localStore)
-   
-console.log(store)
+  store.push(...localStore)
    
   return init
 }

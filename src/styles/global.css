@@ -20,6 +20,7 @@
 
 body{
   background: white;
+  padding: 15px 15px;
 }
 
 [data-for = "board"]{

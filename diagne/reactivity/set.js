@@ -1,4 +1,4 @@
-import { effects} from './watch-effect.js'
+import {effects, render} from './reactivity.js'
 import {update} from './update.js'
 import {store as vStore} from './store.js'
 import {renderObjectsTree, dIndexOf} from '../utils/utils.js'
@@ -98,6 +98,7 @@ export const set = (callback, options = null) => {
     }
   } 
   
+
   if(componentName) update(key,newValue, componentName)
   if(!componentName) update(key,newValue)
   

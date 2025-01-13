@@ -1,5 +1,5 @@
 export const effects = [];
 
-export const watchUpdates = (callback) => {
+export const newWatch = (callback) => {
    effects.push(callback) 
  }

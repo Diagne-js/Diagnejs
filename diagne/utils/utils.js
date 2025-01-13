@@ -7,3 +7,5 @@ export {renderObjectsTree}
 export {changedFrom} from './change-from.js'
 
 export {specialsAttributes} from './specials-attributes.js'
+
+export {methodsIntoHtml} from './methodsIntoHtml.js'

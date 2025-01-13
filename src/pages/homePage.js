@@ -86,7 +86,7 @@ export const home = () => {
      <h1>Morpion game</h1>
      
     <p if='isWinner'>{player} has lose</p>
-     <p else>next player is {player}</p>
+     <p else>next player is { player }</p>
 
      <section class='morpion'>
         <div 
@@ -100,10 +100,12 @@ export const home = () => {
      <button for='state of states' onclick='jumpTo: ::i'>
          move to #{state.id}
      </button>
+    
+     <Todo value=player placeholder="add a new todo"/>
      
-     <Todo />
-     
-     <GetStarted />
+     <GetStarted type='text' placeholder='text'/><br>
+     <GetStarted type='color' placeholder="" /><br>
+     <GetStarted type="email" placeholder="email" />
      
   `
 }

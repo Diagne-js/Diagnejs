@@ -6,13 +6,13 @@ export const getStartedPage = () => {
     if (product == 'diagne js') {
         return 'react'
       }
-     else if (product == 'react') {
+    else if (product == 'react') {
         return 'vue'
       }
-      else if (product == 'vue') {
+    else if (product == 'vue') {
         return 'svelte'
       }
-      else if (product == 'svelte') {
+    else if (product == 'svelte') {
         return 'diagne js'
        }
   }
@@ -24,7 +24,7 @@ export const getStartedPage = () => {
    })
   
     return`<h1>
-      Get started with {product}
+      Get started with { product }
       <button onclick="changeProduct">
         change product from {product}
       </button>

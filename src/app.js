@@ -1,4 +1,4 @@
-import { create, set, event } from 'diagne' 
+import { create, set, event} from 'diagne' 
 
 export const App = () => {
   return `

@@ -1,23 +1,33 @@
 import {store} from './store.js'
+import {dEval} from '../utils/utils.js'
 
 export const bindValues = (target, Store = null) => {
+  const findDynamicHtml = /\{([^{}]*)\}/g
   
-  if (Store != null) {
+  const dynamicsHtml = target.match(findDynamicHtml)
+  
+  if(!dynamicsHtml) return target
+  
+  for (let dynHtml of dynamicsHtml) {
     
-    const componentName = Store.componentName
+    let name = dynHtml.slice(1, dynHtml.length - 1).trim()
 
-    for(let stocked of Store.variables){
-      target = target.replaceAll(`{${stocked.name}}`,
-      `<span data-binding="${componentName}.${stocked.name}">${stocked.value}</span>`)
-    
-    }
-    return target
-  }
-  
-for(let stocked of store){
-   target = target.replaceAll(`{${stocked.name}}`, `<span data-binding="${stocked.name}">${stocked.value}</span>`)
-    
-  }
+     if (Store != null) {
+         const componentName = Store.componentName
+         let value = dEval(componentName + '| ' + name, false)
+         if (value) {
+           target = target.replace(dynHtml,
+                   `<span data-binding="${componentName}.${name}">${value}</span>`)
+         
+        }
+     }else{
+       let value = dEval(name, false)
+         if(value) {
+           target = target.replace(dynHtml, 
+         `<span data-binding="${name}">${value}</span>`)
+        }
+     }
+}
   
   return target
 }

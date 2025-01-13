@@ -6,7 +6,6 @@ import {store} from '../reactivity/reactivity.js'
 export const restrictNoDeclaredVariables = (component,name) => {
    component = component.toString()
    const findDynamicHtml = /\{(.*?)\}/g
-   
    let dynamicValues = component.match(findDynamicHtml)
    
    let externeVariableIsUsed = {state: false}
@@ -19,7 +18,11 @@ export const restrictNoDeclaredVariables = (component,name) => {
       internalVariables.push(stocked.name)
    }
    
-   if(internalVariables.length == 0 && dynamicValues.length > 0) throw new ReferenceError(`${dynamicValues[0]} has been not declared `)
+   const internalVariablesLength = internalVariables.length
+   
+   if(internalVariablesLength == 0 && dynamicValues) {
+     throw new ReferenceError(`${dynamicValues[0]} has been not declared `)
+   }
    
    if(!dynamicValues) return 
    

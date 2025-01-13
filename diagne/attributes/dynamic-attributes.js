@@ -1,4 +1,4 @@
-import {store} from '../reactivity/store.js'
+import {store as globalStore} from '../reactivity/store.js'
 import {dEval} from '../utils/d-eval.js'
 
 
@@ -19,16 +19,22 @@ export const variablesUsedByDynAttributes = []
 
 
 export const useDynamicsAttributes = () => {
-  
+  let store = [...globalStore]
 for(const attr of targetAttributes){
   
    document.querySelectorAll(`[d-${attr}]`).forEach(el => {
-      const val = el.getAttribute(`d-${attr}`)
+      let val = el.getAttribute(`d-${attr}`)
+      
+      if (val.includes('|')) {
+        console.log(val.split('|')[0].trim())
+        console.log(store)
+        store = store.find(s => s.componentName == val.split('|')[0].trim()).variables 
+        val = val.split('|')[1].trim()
+      }
       
       let condition = 'the default value: true'
       let bruteCondition = condition
       let value = val
-      
       
       if (val.includes('=>')) {
         condition = dEval(val.split('=>')[0].trim())

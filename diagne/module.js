@@ -1,7 +1,7 @@
 import {
     create,
     set,
-    watchUpdates,
+    newWatch,
     render
     
 } from './reactivity/reactivity.js'
@@ -14,7 +14,7 @@ import {event} from './custom-methods/events.js'
 
 import {newBind}  from './attributes/attributes.js'
 
-export {create,set,watchUpdates,seo,event,newBind}
+export {create,set,newWatch,seo,event,newBind}
 
 export {getPageDatas} from './custom-methods/page-datas.js'
 

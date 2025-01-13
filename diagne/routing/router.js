@@ -2,7 +2,6 @@ import {routes} from '../../src/routes.js'
 import {render, store, resetData} from '../reactivity/reactivity.js'
 import {gettingToPageDatasStore} from '../custom-methods/page-datas.js'
 import {variablesUsedBy_dFor} from '../attributes/attributes.js'
-import {create,set,watchUpdates,seo,event,newBind, getPageDatas, reUse} from '../module.js'
 
 
 const pageDatas = {

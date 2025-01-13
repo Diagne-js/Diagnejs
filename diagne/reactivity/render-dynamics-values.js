@@ -23,7 +23,6 @@ import {addNames} from './create.js'
 export const render = async (app,selector, content = null) => {
   
    if (content) {
-     
      addNames(content)
    }else{
      addNames(app)
