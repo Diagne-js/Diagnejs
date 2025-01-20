@@ -1,6 +1,6 @@
-const renderObjectsTree = (variable,name) => {
+const renderObjectsTree = (variable,name, addParent = true) => {
   let tree = []
-  if(name) tree.push({name: name, value: variable})
+  if(name && addParent) tree.push({name: name, value: variable})
   for(const key of Object.keys(variable)){
     let branch
     if(!Array.isArray(variable)) {

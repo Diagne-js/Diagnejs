@@ -2,7 +2,7 @@ import {create, set, event} from 'diagne'
 
 export const getStartedPage = () => {
   
-  const setProduct = () => {
+  const setProduct = (product) => {
     if (product == 'diagne js') {
         return 'react'
       }
@@ -18,6 +18,10 @@ export const getStartedPage = () => {
   }
   
    let product = create('diagne js',{setter: setProduct})
+   let products = create(['react', 'vue', 'svelte'])
+   
+   setTimeout(() => set(() => products = [...products, '...processing']),800)
+   setTimeout(() => set(() => products[3] = 'diagnejs'),2300)
    
    event('changeProduct', () => {
      product = set('product')
@@ -28,5 +32,6 @@ export const getStartedPage = () => {
       <button onclick="changeProduct">
         change product from {product}
       </button>
+      <p for="Sproduct in products">{Sproduct}</p>
     </h1>`
 }

@@ -1,12 +1,36 @@
-import {create, set, event} from 'diagne'
+import {create, set, event, newWatch, getPageDatas } from 'diagne'
 
 
 export const home = () => {
-  let board = create(['','','','','','','','',''])
-  let player = create('X')
-  let isWinner = create(false)
+  const array = ['','','','','','','','','']
   
+  const setPlayer = (player) => {
+    if (player == 'X') {
+      return 'O'
+    }else{
+      return 'X'
+    }
+  }
+
+  let board = create(array)
+  let player = create('X', {setter:setPlayer})
+  let isWinner = create(false)
   let states = create([])
+  let count = create(0)
+  let dbCount = create(67)
+  let wP = create(array)
+  
+  newWatch((oldValue) => {
+    set(() => dbCount = count * 2)
+  },{callNow: true})
+  
+  const counter = setInterval(() => set(() => count += 1),1000)
+  
+  getPageDatas((data) => {
+    if (data.path != '/') {
+      clearInterval(counter)
+    }
+  })
   
   const winPositions = [
      [0,1,2],
@@ -18,9 +42,6 @@ export const home = () => {
      [0,4,8],
      [2,4,6]
   ]
-  
-  let wP = create(['','','','','','','','',''])
-  
   
   const checkWin = () => {
     for (let pos of winPositions) {
@@ -54,7 +75,7 @@ export const home = () => {
                  id: states.length + 1
               }
         ])
-        set(() => player = player == 'X' ? 'O' : 'X')
+        player = set('player')
     }
   })
   
@@ -72,19 +93,18 @@ export const home = () => {
       set(() => isWinner = state.isWinner)
       return
     }
-     for (var i = 0; i < board.length; i++) {
-       set(() => board[i] = '', {i:i})
-       set(() => wP[i] = '', {i:i})
+       for (var i = 0; i < 9; i++) {
+         set(() => board[i] = '', {i})
+         set(() => wP[i] = '', {i})
+       }
        set(() => states = [])
-     }
-     set(() => isWinner = false)
+       set(() => isWinner = false)
   })
-  
-  
+
   
   return `
      <h1>Morpion game</h1>
-     
+     { count} * 2 = {dbCount}
     <p if='isWinner'>{player} has lose</p>
      <p else>next player is { player }</p>
 
@@ -100,12 +120,5 @@ export const home = () => {
      <button for='state of states' onclick='jumpTo: ::i'>
          move to #{state.id}
      </button>
-    
-     <Todo value=player placeholder="add a new todo"/>
-     
-     <GetStarted type='text' placeholder='text'/><br>
-     <GetStarted type='color' placeholder="" /><br>
-     <GetStarted type="email" placeholder="email" />
-     
   `
 }

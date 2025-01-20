@@ -10,7 +10,6 @@ export const Todo = (props) => {
   event('input', (e) => set(() => newTodo = e.target.value))
   
   return `
-
   
     <h1>
       todo list
@@ -21,7 +20,7 @@ export const Todo = (props) => {
       add
     </button>
       <ul>
-          <li for="todo in todos">
+          <li for="todo in todos" >
              {todo}
           </li>
       </ul>

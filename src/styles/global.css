@@ -47,3 +47,15 @@ body{
 .green{
   color:green;
 }
+
+input, textarea{
+  outline-color: transparent;
+  width:300px;
+  height: 40px;
+  border: solid 2px blue;
+}
+textarea{
+  width: 300px;
+  height: 200px;
+  margin: 15px 0;
+}

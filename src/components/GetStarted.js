@@ -1,11 +1,22 @@
-import {reUse, create, set, getPageDatas} from 'diagne'
+import {event, create, set, getPageDatas} from 'diagne'
 
 export const GetStarted = (props) => {
-
-  return `
-     <input type="props.type" d-placeholder="props.placeholder"/>
+  
+  let inputValue = create('')
+  
+  event(`handlerVolume`, (e) => set(() => inputValue = e.target.value))
+  
+  return`
+  
+    { inputValue }
+  
+     <input 
+         oninput="handlerVolume"
+         d-type='props.type '
+         d-placeholder="props.placeholder"/>
+    
      <button>
-       action
+       {props.btn}
      </button>
   `
 }

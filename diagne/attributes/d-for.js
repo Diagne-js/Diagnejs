@@ -12,7 +12,7 @@ import {
 
 export const variablesUsedBy_dFor = []
 
-const attributes = ['show','hide','if','d-style']
+const attributes = ['show','hide','if','d-style','to']
 
 export const dFor = (l=null) => { 
   const targets = document.querySelectorAll('[for]')
@@ -22,16 +22,18 @@ export const dFor = (l=null) => {
     
     let localStore = store
     
-    if (value.split('|')[0].trim()[0].match(/[A-Z]/)) {
+    if (value.split('|')[1]) {
        localStore = store.find(s => s.componentName == value.split('|')[0].trim()).variables
+         console.log(localStore)
        value = value.split('|')[1].trim()
     }
     
-    
     let split = value.split(" ");
     let itemName = split[0]
-    let iterable = localStore.find(s => s.name == split[2]).value
+    
+    let iterable = localStore.find(s => s.name == split[2].trim()).value
     let iterableStr = split[2].trim()
+      
     
     let tracker = iterableStr
       
@@ -100,6 +102,7 @@ for (let i in iterable) {
       html += currentHTML 
       }else{
         const binding = iterableStr+`[${i}]`
+        currentHTML = includesAttributes(currentHTML, binding, itemName, iterableStr, i)
         currentHTML = innerBase.replaceAll(`{${itemName}}`, `<span data-binding="${binding}">${item}</span>`);
         for (var n = 1; n < 20; n++) {
         i = parseFloat(i)
@@ -147,7 +150,7 @@ const includesAttributes = (str,b,itemName,iterable, i) => {
        let value = catched.match(catchValue)[0]
        
        
-      if (value.includes(b) && !str.includes(`[${value}]`)) {
+      if (value.includes(b) && str.includes(`[${value}]`)) {
          value = 
          value.replaceAll(`[${itemName}`, `[${iterable}[${i}]`)
        }

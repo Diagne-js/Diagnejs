@@ -15,19 +15,17 @@ export const bindValues = (target, Store = null) => {
      if (Store != null) {
          const componentName = Store.componentName
          let value = dEval(componentName + '| ' + name, false)
-         if (value) {
+         if (value != undefined) {
            target = target.replace(dynHtml,
                    `<span data-binding="${componentName}.${name}">${value}</span>`)
-         
         }
      }else{
        let value = dEval(name, false)
-         if(value) {
+        if(value != undefined) {
            target = target.replace(dynHtml, 
          `<span data-binding="${name}">${value}</span>`)
         }
      }
 }
-  
   return target
 }

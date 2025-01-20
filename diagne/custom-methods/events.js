@@ -1,4 +1,4 @@
-import {dEval} from '../utils/d-eval.js'
+import {dEval, dIndexOf } from '../utils/utils.js'
 
 export const eventsStore = []
 
@@ -13,19 +13,18 @@ export const event = (name, handler) => {
    const events = Object.keys(window).filter(e => e[0]=="o" && e[1] == "n")
    
    for (let event of events) {
-      
-      document.querySelectorAll(`[${event}]`)
-      .forEach(el => {
-        
+      for(const el of [...document.querySelectorAll(`[${event}]`)]) {
          let value = el.getAttribute(event).split(':')
+         
+         if (event == 'onsubmit') {
+           onSubmit(value[0], el)
+           continue
+         }
          
          const matchedEvent =
          eventsStore.find(eS => eS.name == value[0])
          
-         
-         
          const params = []
-         
          
          if (value[1]) {
            for (let param of value[1].split(',')) {
@@ -55,12 +54,34 @@ export const event = (name, handler) => {
         else{
           el[event] = (e) => handler()
         }
-        
-        
-         
-        
-     
-      })
+      }
    }
-   
   }
+
+const onSubmit = (value, el) => {m
+  let prevent = false
+  if (value.includes('-prevent')) {
+    prevent = true
+    value = value.slice(0, value.indexOf('-prevent')).trim()
+  }
+  
+  const matchedEvent =
+         eventsStore.find(eS => eS.name == value)
+  
+  const data = {}
+         
+  const submitBtn = el.querySelector("input[type='submit']")
+  
+  const inputs = el.querySelectorAll('[name]')
+         
+  el.onsubmit = (e) => {
+    if (prevent) {
+      e.preventDefault()
+    }
+    inputs.forEach((input) => {
+    const name = input.getAttribute('name')
+    data[name] = input.value
+  })
+    matchedEvent.handler(data)
+  }
+}

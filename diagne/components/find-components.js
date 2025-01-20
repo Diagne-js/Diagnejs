@@ -20,6 +20,7 @@ const findComponents = /<([A-Z][a-zA-Z0-9]*)\s*(?:\s*[a-zA-Z0-9]+\s*=\s*(?:"[^"]
 
   for (const componentTag of match) {
     let name = componentTag.slice(1, componentTag.indexOf("/>")).trim();
+
     let props = {}
     if (name.includes('=')) {
       let propsStr = name.slice(name.indexOf(' '), name.length).trim()
@@ -36,16 +37,22 @@ const findComponents = /<([A-Z][a-zA-Z0-9]*)\s*(?:\s*[a-zA-Z0-9]+\s*=\s*(?:"[^"]
          props[propName] = propValue
       }
     }
-  
-    componentsName.push(name)
     
-    const path = `../../src/components/${name}.js`;
+    const originName = name
+
+    if (componentsName.find(n => n === name)) {
+       const similarCompLength = componentsName
+       .filter(n => n.split('#n#')[0] == name).length
+        name = name + '#n#'+similarCompLength
+    }
+    
+    const path = `../../src/components/${originName}.js`;
+    
+    componentsName.push(name)
 
     await import(path)
       .then((module) => {
-         const savedStore = [...store]
-         
-         const target = module[name]
+         const target = module[originName]
          store.push({componentName: name, variables: []})
         addNames(target, name, props)
        
@@ -56,9 +63,8 @@ const findComponents = /<([A-Z][a-zA-Z0-9]*)\s*(?:\s*[a-zA-Z0-9]+\s*=\s*(?:"[^"]
          component = target();
        }
        component = bindValues(component, store[store.length - 1])
-       restrictNoDeclaredVariables(target, name)
+     //  restrictNoDeclaredVariables(target, name)
        component = specifyProvidence(component,name)
-      
        
         html = html.replaceAll(componentTag, component);
         

@@ -21,6 +21,7 @@ export const set = (callback, options = null) => {
      
 
  let store = vStore
+ let oldValue
  
  let componentName = null
 
@@ -29,20 +30,20 @@ export const set = (callback, options = null) => {
      componentName = store[i].componentName
      store = store[i].variables
  }
+ 
+
+ 
  if (typeof callback == 'string') {
    const target = callback 
-   const i = store.findIndex(s => s.name == target)
-   const newValue = store[i].setter()
-   
-   store[i].value = newValue 
+   const stockedIndex = store.findIndex(s => s.name == target)
+   const stocked = store[stockedIndex]
+   const newValue = stocked.setter(stocked.value)
+   oldValue = stocked.value 
+   stocked.value = newValue
    
    if(componentName) update(target,newValue, componentName)
    if(!componentName) update(target,newValue)
-  
-   if(!effects) return
-   for(const effect of effects){
-      effect()
-   }
+   useEffects(target, newValue, oldValue)
    return newValue
  }
   
@@ -74,38 +75,48 @@ export const set = (callback, options = null) => {
       key = action.slice(0, action.indexOf("*=")).trim()
    }else if (action.includes('/=')) {
       key = action.slice(0, action.indexOf("/=")).trim()
-   }else{
+   }else if(action.includes('=')){
      key = action.slice(0, action.indexOf("=")).trim()
    }
-
-
+   
+       const stockedIndex = store.findIndex(s => s.name == key)
+       const stocked = store[stockedIndex]
+       
+       if(!stocked) return
+       
+       oldValue = stocked.value
   
- for(let i in store){
-    const stocked = store[i]
-  
-    if (!stocked.componentName && typeof newValue == 'object' && 
+    if (newValue && typeof newValue == 'object' && 
         Object.keys(newValue).length > 
         Object.keys(stocked.value).length && key == stocked.name) {
-        
-        let treeOfNewValue = renderObjectsTree(newValue[newValue.length-1], `${key}[${stocked.value.length}]`)
+        let treeOfNewValue 
+        if (typeof newValue[newValue.length - 1] == 'object') {
+          treeOfNewValue = renderObjectsTree(newValue[newValue.length-1], `${key}[${stocked.value.length}]`)
+        } else {
+          treeOfNewValue = [{name:`${key}[${stocked.value.length}]`, value: newValue[newValue.length - 1]}]
+        }
           for (let b of treeOfNewValue) {
-            store.push({name: b.name, value: b.value})
+         if(!store.find(s => s.name == b.name)) store.push({name: b.name, value: b.value})
           }
-       
-    }
-        if(stocked.name == key && stocked.value != newValue) {
-      store[i].value = newValue
-    }
   } 
   
+      stocked.value = newValue
 
   if(componentName) update(key,newValue, componentName)
   if(!componentName) update(key,newValue)
   
-  if(!effects) return
+  useEffects(key,newValue, oldValue)
+}
+
+const useEffects = (key, newValue,oldValue) => {
+   if(!effects) return
   for(const effect of effects){
-    effect()
+    if (effect.dependences == 'all') {
+       effect.callback(oldValue,  newValue,  key)
+       continue
+    }
+    if (effect.dependences.find(d => d == key)) {
+      effect.callback(oldValue,  newValue, key)
+    }
   }
 }
- 
- 

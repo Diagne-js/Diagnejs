@@ -1,3 +1,5 @@
+const events = Object.keys(window).filter(m => m.startsWith('on'))
+
 export const specialsAttributes = [
       'for',
       'if',
@@ -12,3 +14,5 @@ export const specialsAttributes = [
       'd-disabled',
       'd-style'
   ]
+  
+  

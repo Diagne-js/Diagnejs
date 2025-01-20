@@ -19,3 +19,5 @@ export {create,set,newWatch,seo,event,newBind}
 export {getPageDatas} from './custom-methods/page-datas.js'
 
 export {reUse} from './components/re-use.js'
+
+export {navigate, redirect, newRoute} from './routing/index.js'

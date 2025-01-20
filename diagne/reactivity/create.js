@@ -7,24 +7,24 @@ const declarations = (app) => {
    /(const|let)\s+([a-zA-Z_$][\w$]*)\s*=\s*(.+)/g;
    
     const matches = app.match(findDeclaration)
-    
     return matches
+  
 }
 
 //  <<<<<<<<<_______ 
 //    the function that add the names to all variables declared with    create() to the store
 // _________>>>>>>>>>>>
-export const addNames = (app, component = null, props) => {
-  
+export const addNames = (app, component = null, props = {}) => {
   let localStore = [...store]
   let i
 
   if(component) {
     i = store.findIndex(s => s.componentName === component)
-  
     localStore = [...store[i].variables]
   }
-  if(!declarations(app)) return
+  
+  if(!declarations(app) && Object.keys(props).length == 0) return
+  if (declarations(app)) {
     for(const declaration of declarations(app)){
          if(declaration.includes("create(")) {
               const name = declaration.slice(declaration.indexOf(" "), 
@@ -32,9 +32,11 @@ export const addNames = (app, component = null, props) => {
           if(!localStore.find(lS => lS.name == name)) localStore.push({name: name})
          }
     }
+  }
   if (component) {
     const propsAdded = renderObjectsTree(props,'props')
     localStore = [...localStore, ...propsAdded]
+    
     store[i].variables = [...localStore]
     return
   }
@@ -47,7 +49,6 @@ export const addNames = (app, component = null, props) => {
 let createUsedTime = 0
 
 export const create = (init, options = null) => {
-  
   let changeFrom = new Error()
   changeFrom = changeFrom.stack.slice(
      dIndexOf(changeFrom.stack, ' at ', 2),
@@ -79,14 +80,21 @@ export const create = (init, options = null) => {
    
    if (options) {
      if (options.setter) {
-        correspondingItem.setter = options.setter
+       if (options.setter() == 'initial') {
+          correspondingItem.setter = () => init
+       }else{
+         correspondingItem.setter = options.setter
+       }
+     }
+     if (options.keepAlive) {
+       correspondingItem.keepAlive = [true, changeFrom]
      }
   }
   
   
   
    if(typeof init == 'object' && Object.keys(init).length != 0) {
-       for(let b of renderObjectsTree(init,correspondingItem.name)){
+       for(let b of renderObjectsTree(init,correspondingItem.name, false)){
           localStore.push({value: b.value, name: b.name})
        }
    }
@@ -99,6 +107,5 @@ export const create = (init, options = null) => {
   
   store.length = 0;
   store.push(...localStore)
-   
   return init
 }

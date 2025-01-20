@@ -19,16 +19,16 @@ export const variablesUsedByDynAttributes = []
 
 
 export const useDynamicsAttributes = () => {
-  let store = [...globalStore]
+
 for(const attr of targetAttributes){
   
    document.querySelectorAll(`[d-${attr}]`).forEach(el => {
+     let store = [...globalStore]
       let val = el.getAttribute(`d-${attr}`)
       
       if (val.includes('|')) {
-        console.log(val.split('|')[0].trim())
-        console.log(store)
-        store = store.find(s => s.componentName == val.split('|')[0].trim()).variables 
+        store = store.find(s => s.componentName == val.split('|')[0].trim()).variables
+      
         val = val.split('|')[1].trim()
       }
       

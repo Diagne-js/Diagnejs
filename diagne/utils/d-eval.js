@@ -52,24 +52,27 @@ for(let item of splited) {
          
          else if(item.match(/[a-zA-Z]/)) {
            if (item.includes('.')) {
+             const savedLast = item.slice(item.lastIndexOf('.')+1)
               let method = item.slice(item.lastIndexOf('.'))
               item = item.slice(0, item.indexOf(method))
            const matchedValue = localStore.find(s => s.name == item)
               method = methodsIntoHtml.find(m => m == method.slice(1))
               
-             if(!matchedValue){
+              if(!matchedValue){
              if(verify) throw new ReferenceError(`${item} is not defined`)
              continue
            }
+              
               if (!method) {
-                items.push(matchedValue.value)
+                items.push(matchedValue.value[savedLast])
                 continue
               }
+            
               method = method.slice(0,method.indexOf('('))
               items.push(matchedValue.value[method]())
             }else{
              const matchedValue = localStore.find(s => s.name == item)
-             if(!matchedValue){
+             if(matchedValue == undefined){
              if(verify) throw new ReferenceError(`${item} is not defined`)
              continue
            }
@@ -90,6 +93,8 @@ for(let item of splited) {
          }
          
 }
+
+    
     const finalExp = unionOfItems(items)
     return finalExp
 }

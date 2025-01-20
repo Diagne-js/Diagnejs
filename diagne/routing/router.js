@@ -3,14 +3,14 @@ import {render, store, resetData} from '../reactivity/reactivity.js'
 import {gettingToPageDatasStore} from '../custom-methods/page-datas.js'
 import {variablesUsedBy_dFor} from '../attributes/attributes.js'
 
+let keepedAlive = []
 
 const pageDatas = {
   toNewPage: false,
   path: '/'
 }
 
-export const pages = []
-
+const pages = []
 
 const addDynamicsRoutes = () => {
   if(routes.length == 0) return
@@ -36,44 +36,42 @@ const addDynamicsRoutes = () => {
      
       }
     }
+    
 }
 addDynamicsRoutes()
 
 
 const findDLinks = () => {
   document.querySelectorAll('a').forEach(link => {
-     if(link.hasAttribute("d-link")) {
+     if(link.hasAttribute("to")) {
        
-        const value = link.getAttribute('href')
-       
-        if (link.hasAttribute('add-crawlable')) {
-           let crawlable = document.createElement('a')
-           crawlable.href = document.location.origin + value
-           crawlable.style.display = 'none'
-           link.insertAdjacentElement('beforebegin',crawlable)
-           link.removeAttribute('add-crawlable')
-        }
-       
+        const value = link.getAttribute('to')
+        link.href = document.location.origin + value
         link.addEventListener('click', (event) => {
-          
                event.preventDefault();
                navigate(value);
                
         })
-        link.removeAttribute('d-link')
      }
-  });
+  })
 }
 
 
-export const navigate = (path) => {
+export const navigate = (path, params = []) => {
   if(window.location.pathname == path) return
-  
   window.history.pushState({}, '', path);
-  renderRoute(path);
+  if (!pages.find(p => p.path == path)) {
+    renderRoute(path, params);
+    return
+  }
+  
+  resetData()
+  document.querySelector('#view').innerHTML = pages.find(p => p.path == path).content()
+  
+  
 };
 
-const renderRoute = (path) => {
+const renderRoute = (path, params = []) => {
   if (routes.length == 0) return
   
      const route = routes.find(r => r["path"] == path) || 
@@ -84,20 +82,34 @@ const renderRoute = (path) => {
           the path ${path} is not set
       `}
   
-    let content = route.content ; 
+    let content = route.content; 
+    
 
-      if(route.path == '*') {
-         throw new RenferenceError(`set up correctly the route ${path} at src/routes.js`)
-         return
+       if(route.path == '*') {
+          throw new RenferenceError(`set up correctly the route ${path} at src/routes.js`)
+          return
        }
        
        resetData()
        
-       if(route.type == "dynamic") {
-          render(content(route.ref), '#view', content)
+       let page = ''
+      
+       if (params.length > 0 && route.type == 'dynamic') {
+         page = () => render(content(route.ref, ...params), '#view', content)
+       }else if (params.length > 0 && route.type != 'dynamic') {
+         page = () => render(content(...params), '#view', content)
+       }else if(route.type == "dynamic") {
+          page = () => render(content(route.ref), '#view', content)
         }else{
-           render(content, '#view')
+          page = () => render(content, '#view')
         }
+        
+         page()
+        
+        pages.push({path, content: page})
+        console.log(path)
+        page = ''
+        
         pageDatas.toNewPage = true
         pageDatas.path = path
         for (let getting of gettingToPageDatasStore) {

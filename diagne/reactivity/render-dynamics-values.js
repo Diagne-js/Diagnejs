@@ -20,7 +20,7 @@ import {addNames} from './create.js'
 
 
 
-export const render = async (app,selector, content = null) => {
+export const render = (app,selector, content = null) => {
   
    if (content) {
      addNames(content)
@@ -36,10 +36,10 @@ export const render = async (app,selector, content = null) => {
   }
   str = bindValues(str)
   
-  str = await findComponents(str)
+  //str = await findComponents(str)
+  const target = document.querySelector(selector)
   
-  
-  document.querySelector(selector).innerHTML = str
+  target.innerHTML = str
   renderCorrectPath()
   dFor()
   useDynamicsAttributes()
@@ -48,4 +48,5 @@ export const render = async (app,selector, content = null) => {
   addEvents()
   activeBindings()
   dIf()
+  return target.innerHTML 
 }
