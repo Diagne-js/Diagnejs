@@ -4,7 +4,7 @@ export {dIndexOf} from './d-index-of.js'
 
 export {renderObjectsTree}
 
-export {changedFrom} from './change-from.js'
+export {usedFrom} from './usedFrom.js'
 
 export {specialsAttributes} from './specials-attributes.js'
 

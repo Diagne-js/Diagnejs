@@ -14,7 +14,8 @@ import {updateHTML} from './updateHtml.js'
 
 
 export const update = (name, newValue, componentName = null) => {
-  updateHTML(name, newValue, componentName)
+  
+  const localStore = store[componentName] || store.app
   
   variablesUsedBy_dFor.find((v,i) => {
    if (v.name == name && Object.keys(newValue).length != v.length) {
@@ -24,8 +25,9 @@ export const update = (name, newValue, componentName = null) => {
   
   updateHide(name)
   updateShow(name)
-  updateIf(name)
+  updateIf(name, componentName)
   updateValuesOfDynamicsValue(name,newValue)
+  updateHTML(name, newValue, componentName)
 }
 
 
@@ -127,16 +129,19 @@ const updateValuesOfDynamicsValue = (key,newValue) => {
 }
 
 
-const updateIf = (name) => {
-  const ref = dIfStore.find(r => r.condition.includes(name))
+const updateIf = (name, from) => {
+  if (from == null) {
+    from = 'app'
+  }
+  
+  const ref = dIfStore.find(r => r.from == from && r.condition.includes(name))
   if (ref) {
      if (dEval(ref.condition)) {
-        ref.parent.insertBefore(ref.target, ref.ref)
+             if(!ref.parent.contains(ref.target))  ref.parent.insertBefore(ref.target, ref.ref)
         if (ref.ref.hasAttribute('else')) ref.ref.remove()
      }else{
        if (ref.ref.hasAttribute('else')) ref.target.insertAdjacentElement('afterend', ref.ref)
-       ref.target.remove()
-       
+      if(ref.parent.contains(ref.target)) ref.target.remove()
      }
   }
 }

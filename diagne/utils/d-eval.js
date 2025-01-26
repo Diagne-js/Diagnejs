@@ -4,20 +4,17 @@ import {methodsIntoHtml} from '../utils/utils.js'
 
 
 export const dEval = (str, verify = true) => {
-
-let localStore = store
-if (store.find(s => s.componentName == str.split('|')[0]) ) {
-  localStore = 
-  store.find(s => s.componentName == str.split('|')[0]).variables
-  
-  str = str.split('|')[1].trim()
+let localStore = store.app
+const componentName = str.split('/#/')[0]
+if (str.includes('/#/') ) {
+  localStore = store[componentName]
+  str = str.split('/#/')[1].trim()
 }
 const items = []
 const splited = str.split(" ")
 
 for(let item of splited) {
         item = item.trim()
-       
          if (typeof parseFloat(item) == 'number' && 
                   !isNaN(parseFloat(item))) {
                     
@@ -145,10 +142,20 @@ for(let item of splited) {
         finalExp = items[0] + items[2]
       }
       
+      else if(items[1] == '-'){
+        finalExp = items[0] - items[2]
+      }
       
-      if(items[3] == "&&" || items[0] == '||') {
+      
+      if(items[3] == "&&" || items[3] == '||') {
         finalExp = 
         finalExp && unionOfItems(items.slice(4, items.length))
+      }else if (items[3] == '+') {
+        finalExp = 
+        finalExp + unionOfItems(items.slice(4, items.length))
+      }else if (items[3] == '-') {
+        finalExp = 
+        finalExp - unionOfItems(items.slice(4, items.length))
       }
       
     return finalExp

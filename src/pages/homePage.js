@@ -1,36 +1,17 @@
-import {create, set, event, newWatch, getPageDatas } from 'diagne'
+import {create, set, event, newWatch, getPageDatas} from 'diagne'
+import '../components/todo.js'
 
 
 export const home = () => {
   const array = ['','','','','','','','','']
   
-  const setPlayer = (player) => {
-    if (player == 'X') {
-      return 'O'
-    }else{
-      return 'X'
-    }
-  }
+  const setPlayer = (player) => player == 'X' ? 'O' : 'X'
 
   let board = create(array)
   let player = create('X', {setter:setPlayer})
   let isWinner = create(false)
   let states = create([])
-  let count = create(0)
-  let dbCount = create(67)
   let wP = create(array)
-  
-  newWatch((oldValue) => {
-    set(() => dbCount = count * 2)
-  },{callNow: true})
-  
-  const counter = setInterval(() => set(() => count += 1),1000)
-  
-  getPageDatas((data) => {
-    if (data.path != '/') {
-      clearInterval(counter)
-    }
-  })
   
   const winPositions = [
      [0,1,2],
@@ -100,14 +81,11 @@ export const home = () => {
        set(() => states = [])
        set(() => isWinner = false)
   })
-
   
   return `
      <h1>Morpion game</h1>
-     { count} * 2 = {dbCount}
     <p if='isWinner'>{player} has lose</p>
      <p else>next player is { player }</p>
-
      <section class='morpion'>
         <div 
             for='case from board'
@@ -115,10 +93,11 @@ export const home = () => {
             d-class='wP[::i]'
         >{case}</div>
      </section>
-     
      <button onclick='jumpTo:start'>reset</button>
      <button for='state of states' onclick='jumpTo: ::i'>
          move to #{state.id}
      </button>
+     
+     <Todo />
   `
 }

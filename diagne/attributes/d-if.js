@@ -1,35 +1,36 @@
-import {dEval} from '../utils/d-eval.js'
+import {dEval, usedFrom} from '../utils/utils.js'
 
 
-export const dIfStore = []
-
+export let dIfStore = []
 
 export const dIf = () => {
    document.querySelectorAll('[if]').forEach(el => {
        const parent = el.parentElement;
-       const condition = el.getAttribute("if")
+       let condition = el.getAttribute("if")
+       let From = 'app'
        const siblings = Array.from(parent.children);
        const ref = parent.children[siblings.indexOf(el)+1];
-       
-
        el.removeAttribute('if')
        
-      dIfStore.push({
-                      target:el,
-                      ref:ref,
-                      condition: condition,
-                      parent: parent
-      })
-        
-           if(dEval(condition)) {
+       if(dEval(condition)) {
              if (ref.hasAttribute('else')) {
                ref.remove()
              }
-           }else{
-                el.remove()
-                if (ref.hasAttribute('else')) {
-                   
-                }
-            }
+       }else{
+              el.remove()
+       }
+            
+    if (condition.includes('/#/')) {
+         const [from, input] = condition.split('/#/').map(i => i.trim())
+         From = from
+    }
+    
+      dIfStore.push({
+           target:el,
+           ref:ref,
+           condition: condition,
+           parent: parent,
+           from: From
+      })
    })
 }

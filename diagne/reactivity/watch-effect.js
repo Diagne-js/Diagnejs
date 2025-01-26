@@ -4,7 +4,7 @@ export const effects = [];
 
 export const newWatch = (callback, options) => {
   const str = callback.toString()
-  const storeNames = store.map(s => s = s.name)
+  const storeNames = store.app.map(s => s = s.name)
   let dependences = []
   dependences = storeNames.filter(s => str.includes(s))
   

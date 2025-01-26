@@ -18,7 +18,6 @@ export const App = () => {
       bamba
     </a>
     <main id='view'>
-    hey
     </main>
   `
 }                                                                                                                                                                                                                                                                                                                                                                                                                              

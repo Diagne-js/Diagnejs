@@ -1,29 +1,21 @@
-import {restrictNoDeclaredVariables} from './restrict-no-declared-variables.js'
+import {componentsStore} from "./componentsStore.js"
 import {specifyProvidence} from './specifyProvidence.js'
-
-import {addNames} from '../reactivity/reactivity.js'
-
-import {bindValues, store} from '../reactivity/reactivity.js'
-
-import {dEval} from '../utils/utils.js'
+import {addNames, bindValues, store} from '../reactivity/reactivity.js'
 
 
-export const componentsName = []
+export const findComponents = (html) => {
+  const findComponentsRegEx = /<([A-Z][a-zA-Z0-9]*)\s*(?:\s*[a-zA-Z0-9]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s/>]+)\s*)*\/>/g;;
 
-export const findComponents = async (html) => {
-  
-const findComponents = /<([A-Z][a-zA-Z0-9]*)\s*(?:\s*[a-zA-Z0-9]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s/>]+)\s*)*\/>/g;
-
-  const match = html.match(findComponents);
+  const match = html.match(findComponentsRegEx);
 
   if (!match) return html;
-
+  
   for (const componentTag of match) {
-    let name = componentTag.slice(1, componentTag.indexOf("/>")).trim();
-
-    let props = {}
-    if (name.includes('=')) {
-      let propsStr = name.slice(name.indexOf(' '), name.length).trim()
+    let name = componentTag.slice(1, 
+                 componentTag.indexOf("/>")).trim();
+    const props = {}
+     if (name.includes('=')) {
+       let propsStr = name.slice(name.indexOf(' '), name.length).trim()
       const findProps = /(\w+)\s*=\s*("[^"]*"|'[^']*'|[^\s]+)/g;
       name = name.slice(0, name.indexOf(' '))
       for (let propStr of propsStr.match(findProps)) {
@@ -36,40 +28,22 @@ const findComponents = /<([A-Z][a-zA-Z0-9]*)\s*(?:\s*[a-zA-Z0-9]+\s*=\s*(?:"[^"]
          }
          props[propName] = propValue
       }
-    }
-    
-    const originName = name
-
-    if (componentsName.find(n => n === name)) {
-       const similarCompLength = componentsName
-       .filter(n => n.split('#n#')[0] == name).length
-        name = name + '#n#'+similarCompLength
-    }
-    
-    const path = `../../src/components/${originName}.js`;
-    
-    componentsName.push(name)
-
-    await import(path)
-      .then((module) => {
-         const target = module[originName]
-         store.push({componentName: name, variables: []})
-        addNames(target, name, props)
-       
-       let component
-       if (props) {
-         component = target(props);
-       }else{
-         component = target();
-       }
-       component = bindValues(component, store[store.length - 1])
-     //  restrictNoDeclaredVariables(target, name)
-       component = specifyProvidence(component,name)
-       
-        html = html.replaceAll(componentTag, component);
-        
-      })
-      .catch((err) => console.error(err));
+     }
+                 
+     let matchedContent = 
+     componentsStore[name]
+     
+     addNames(matchedContent, name, props)
+     
+     matchedContent = matchedContent(props)
+     
+     matchedContent = specifyProvidence(matchedContent, name)
+     
+     matchedContent = bindValues(matchedContent, name)
+     
+     matchedContent = findComponents(matchedContent)
+     
+     html = html.replaceAll(componentTag, matchedContent)
   }
   return html;
-}
+};

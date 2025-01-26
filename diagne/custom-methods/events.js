@@ -1,20 +1,26 @@
-import {dEval, dIndexOf } from '../utils/utils.js'
+import {dEval, usedFrom } from '../utils/utils.js'
 
 export const eventsStore = []
 
 
 export const event = (name, handler) => {
-   eventsStore.push({name: name, handler: handler})
+   let from = usedFrom(new Error, true)
+   eventsStore.push({name: name, handler: handler, from})
 }
   
   
   export const addEvents = () => {
-   
    const events = Object.keys(window).filter(e => e[0]=="o" && e[1] == "n")
    
    for (let event of events) {
-      for(const el of [...document.querySelectorAll(`[${event}]`)]) {
+     const targetElements = document.querySelectorAll(`[${event}]`)
+      for(const el of [...targetElements]) {
          let value = el.getAttribute(event).split(':')
+         let from = 'root'
+         if (value[0].includes('/#/')) {
+           from = value[0].slice(0,value[0].indexOf('/#/'))
+           value[0] = value[0].slice(value[0].indexOf('/#/')+3).trim()
+         }
          
          if (event == 'onsubmit') {
            onSubmit(value[0], el)
@@ -22,7 +28,7 @@ export const event = (name, handler) => {
          }
          
          const matchedEvent =
-         eventsStore.find(eS => eS.name == value[0])
+      eventsStore.find(eS => eS.name == value[0] && eS.from == from)
          
          const params = []
          
@@ -41,24 +47,24 @@ export const event = (name, handler) => {
               ).trim()
               
         const pSplited = paramsStr.split(',').map(p => p.trim())
-              
+     
         if (paramsStr == 'e') {
            el[event] = (e) => handler(e)
         }
         else if (pSplited[0] == 'e' && params.length > 0) {
-          el[event] = (e) => handler(e, ...paarams)
+          el[event] = (e) => handler(e, ...params)
         }
         else if (pSplited[0] != 'e' && params.length > 0) {
-          el[event] = (e) => handler(...params)
+          el[event] = () => handler(...params)
         }
-        else{
-          el[event] = (e) => handler()
+        else if(pSplited[0] != 'e' && params.length == 0){
+          el[event] = () => handler()
         }
       }
    }
   }
 
-const onSubmit = (value, el) => {m
+const onSubmit = (value, el) => {
   let prevent = false
   if (value.includes('-prevent')) {
     prevent = true

@@ -36,7 +36,8 @@ export const render = (app,selector, content = null) => {
   }
   str = bindValues(str)
   
-  //str = await findComponents(str)
+  str = findComponents(str)
+  
   const target = document.querySelector(selector)
   
   target.innerHTML = str

@@ -12,7 +12,8 @@ export const specialsAttributes = [
       'd-type',
       'd-placeholder',
       'd-disabled',
-      'd-style'
+      'd-style',
+      ...events
   ]
   
   

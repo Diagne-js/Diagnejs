@@ -2,8 +2,6 @@ import {
     create,
     set,
     newWatch,
-    render
-    
 } from './reactivity/reactivity.js'
 
 
@@ -18,6 +16,7 @@ export {create,set,newWatch,seo,event,newBind}
 
 export {getPageDatas} from './custom-methods/page-datas.js'
 
-export {reUse} from './components/re-use.js'
+export {component} from './components/componentsStore.js'
+export {reUse} from './components/reUse.js'
 
 export {navigate, redirect, newRoute} from './routing/index.js'

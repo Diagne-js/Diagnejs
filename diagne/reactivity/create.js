@@ -1,5 +1,5 @@
 import {store} from './store.js'
-import {renderObjectsTree, dIndexOf} from '../utils/utils.js'
+import {renderObjectsTree, usedFrom} from '../utils/utils.js'
   
 const declarations = (app) => {
   app = app.toString()
@@ -15,12 +15,12 @@ const declarations = (app) => {
 //    the function that add the names to all variables declared with    create() to the store
 // _________>>>>>>>>>>>
 export const addNames = (app, component = null, props = {}) => {
-  let localStore = [...store]
+  let localStore = store.app
   let i
 
   if(component) {
-    i = store.findIndex(s => s.componentName === component)
-    localStore = [...store[i].variables]
+    store[component] = []
+    localStore = store[component]
   }
   
   if(!declarations(app) && Object.keys(props).length == 0) return
@@ -36,11 +36,10 @@ export const addNames = (app, component = null, props = {}) => {
   if (component) {
     const propsAdded = renderObjectsTree(props,'props')
     localStore = [...localStore, ...propsAdded]
-    
-    store[i].variables = [...localStore]
+    store[component] = localStore
     return
   }
-    store.push(...localStore)
+    store.app = localStore
 }
 
 
@@ -50,32 +49,21 @@ let createUsedTime = 0
 
 export const create = (init, options = null) => {
   let changeFrom = new Error()
-  changeFrom = changeFrom.stack.slice(
-     dIndexOf(changeFrom.stack, ' at ', 2),
-     dIndexOf(changeFrom.stack, ' at ', 3),
-   )
-   
-  changeFrom = changeFrom.slice(
-     changeFrom.lastIndexOf('/') + 1,
-    changeFrom.indexOf('.js')
-  ).trim()
+  changeFrom = usedFrom(changeFrom)
   
-    let localStore = [...store]
+    let localStore = store.app
     
-    let i = null
+    let onComp = false
 
     if (!changeFrom.includes('Page') && changeFrom != 'app') {
-      i = store.findIndex(s => s.componentName === changeFrom)
-      localStore = localStore[i].variables
+      onComp = true
+      changeFrom = changeFrom[0].toUpperCase()+changeFrom.slice(1)
+      localStore = store[changeFrom]
     } 
-    
-  if (!localStore[0].value){
+  if (!localStore[0].hasOwnProperty('value')){
       createUsedTime = 0
   }
-  
-  
    const correspondingItem = localStore[createUsedTime]
-  
    correspondingItem.value = init
    
    if (options) {
@@ -91,21 +79,12 @@ export const create = (init, options = null) => {
      }
   }
   
-  
-  
    if(typeof init == 'object' && Object.keys(init).length != 0) {
        for(let b of renderObjectsTree(init,correspondingItem.name, false)){
           localStore.push({value: b.value, name: b.name})
        }
    }
-   createUsedTime++
-   
-  if (i != null) {
-    store[i].variables = [...localStore]
-     return init
-  }
   
-  store.length = 0;
-  store.push(...localStore)
+   createUsedTime++
   return init
 }

@@ -1,24 +1,14 @@
 import {effects, render} from './reactivity.js'
 import {update} from './update.js'
 import {store as vStore} from './store.js'
-import {renderObjectsTree, dIndexOf} from '../utils/utils.js'
-import {componentsName} from '../components/find-components.js'
+import {renderObjectsTree, usedFrom} from '../utils/utils.js'
 
 
   
 export const set = (callback, options = null) => {
   
   let changeFrom = new Error()
-  changeFrom = changeFrom.stack.slice(
-              dIndexOf(changeFrom.stack,' at ', 2),
-              dIndexOf(changeFrom.stack,' at ', 3),
-      )
-      
-  changeFrom = changeFrom.slice(
-                changeFrom.lastIndexOf('/')+1,
-                changeFrom.indexOf('.js')
-     ).trim()
-     
+  changeFrom = usedFrom(changeFrom)
 
  let store = vStore
  let oldValue
@@ -26,9 +16,10 @@ export const set = (callback, options = null) => {
  let componentName = null
 
  if (!changeFrom.includes('Page') && changeFrom != 'app') {
-     const i = store.findIndex(s => s.componentName === changeFrom)
-     componentName = store[i].componentName
-     store = store[i].variables
+     componentName = changeFrom[0].toUpperCase()+changeFrom.slice(1)
+     store = store[componentName]
+ }else{
+   store = vStore.app
  }
  
 
@@ -78,7 +69,6 @@ export const set = (callback, options = null) => {
    }else if(action.includes('=')){
      key = action.slice(0, action.indexOf("=")).trim()
    }
-   
        const stockedIndex = store.findIndex(s => s.name == key)
        const stocked = store[stockedIndex]
        
@@ -89,6 +79,7 @@ export const set = (callback, options = null) => {
     if (newValue && typeof newValue == 'object' && 
         Object.keys(newValue).length > 
         Object.keys(stocked.value).length && key == stocked.name) {
+        
         let treeOfNewValue 
         if (typeof newValue[newValue.length - 1] == 'object') {
           treeOfNewValue = renderObjectsTree(newValue[newValue.length-1], `${key}[${stocked.value.length}]`)

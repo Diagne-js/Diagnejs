@@ -23,13 +23,14 @@ export const useDynamicsAttributes = () => {
 for(const attr of targetAttributes){
   
    document.querySelectorAll(`[d-${attr}]`).forEach(el => {
-     let store = [...globalStore]
+     let store = globalStore.app
+     
       let val = el.getAttribute(`d-${attr}`)
-      
-      if (val.includes('|')) {
-        store = store.find(s => s.componentName == val.split('|')[0].trim()).variables
-      
-        val = val.split('|')[1].trim()
+      console.log(val)
+      if (val.includes('/#/')) {
+        store = globalStore[val.split('/#/')[0].trim()]
+        
+        val = val.split('/#/')[1].trim()
       }
       
       let condition = 'the default value: true'
@@ -64,7 +65,6 @@ for(const attr of targetAttributes){
       
       
       if (condition) {
-
         if(attr != 'disabled') el.setAttribute(attr, dynamicValue)
         if(attr == 'disabled') el.disabled = true
       }else{

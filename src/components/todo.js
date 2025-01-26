@@ -1,28 +1,11 @@
-import {create, set, event} from 'diagne'
+import {create, set, event, component} from 'diagne'
+import './form.js'
 
-export const Todo = (props) => {
-  let todos = create([])
-  let newTodo = create('')
-  event('addTodo', () => {
-    set(() => todos = [newTodo, ...todos]  )
-  })
+component('Todo', (props) => {
   
-  event('input', (e) => set(() => newTodo = e.target.value))
   
   return `
-  
-    <h1>
-      todo list
-    </h1>
-    
-    <input type='text' oninput='input' d-placeholder="props.placeholder">
-    <button onclick='addTodo'>
-      add
-    </button>
-      <ul>
-          <li for="todo in todos" >
-             {todo}
-          </li>
-      </ul>
+     <h1>my todo component</h1>
+     <Form placeholder='add a new todo'/>
   `
-}
+})
