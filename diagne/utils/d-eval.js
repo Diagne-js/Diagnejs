@@ -3,9 +3,13 @@ import {store} from '../reactivity/store.js'
 import {methodsIntoHtml} from '../utils/utils.js'
 
 
-export const dEval = (str, verify = true) => {
+export const dEval = (str, verify = true, from = 'root') => {
 let localStore = store.app
 const componentName = str.split('/#/')[0]
+
+if (from != 'root') {
+  localStore = store[from]
+}
 if (str.includes('/#/') ) {
   localStore = store[componentName]
   str = str.split('/#/')[1].trim()

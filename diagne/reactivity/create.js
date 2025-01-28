@@ -42,6 +42,23 @@ export const addNames = (app, component = null, props = {}) => {
     store.app = localStore
 }
 
+export const addStorage = (target, name, to) => {
+  let localStore = store
+  if (to == 'root') {
+    localStore = store.app
+  }else{
+    localStore = store[to]
+  }
+  
+  if (typeof target != 'object') {
+     localStore.push({name, value: target})
+  }else{
+    for (let b of renderObjectsTree(target, name)) {
+       localStore.push({name: b.name, value: b.value})
+    }
+  }
+}
+
 
 //      <<<<<<<<_________ the create function ------->>>>>>>
 
@@ -50,6 +67,8 @@ let createUsedTime = 0
 export const create = (init, options = null) => {
   let changeFrom = new Error()
   changeFrom = usedFrom(changeFrom)
+  
+  //console.log(changeFrom)
   
     let localStore = store.app
     

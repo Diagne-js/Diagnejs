@@ -4,7 +4,7 @@ export const eventsStore = []
 
 
 export const event = (name, handler) => {
-   let from = usedFrom(new Error, true)
+   let from = usedFrom(new Error, {useRoot: true})
    eventsStore.push({name: name, handler: handler, from})
 }
   

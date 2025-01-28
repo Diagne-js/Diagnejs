@@ -2,4 +2,4 @@ export const store = {
   app: []
 }
 
-//setTimeout(() => console.log(store), 1000)
+setTimeout(() => console.log(store), 1000)

@@ -1,7 +1,7 @@
 import {dIndexOf} from './d-index-of.js'
+import {componentsNames} from '../components/find-components.js'
 
-
-export const usedFrom = (useFrom, moveToRoot = false) => {
+export const usedFrom = (useFrom, options = null) => {
   useFrom = useFrom.stack.slice(
               dIndexOf(useFrom.stack,' at ', 2),
               dIndexOf(useFrom.stack,' at ', 3),
@@ -12,11 +12,19 @@ export const usedFrom = (useFrom, moveToRoot = false) => {
                 useFrom.indexOf('.js')
      ).trim()
      
-  if (useFrom != 'app' && !useFrom.includes('Page')) {
+  const isComp = useFrom != 'app' && !useFrom.includes('Page')
+     
+  if (isComp) {
      useFrom = useFrom[0].toUpperCase() + useFrom.slice(1)
-  } else if (moveToRoot) {
+  } else if (options && options.useRoot) {
     useFrom = 'root'
   }
-     
+  if (isComp) {
+    if (options && options.exist) {
+       
+    }else{
+      useFrom = componentsNames.at(-1)
+    }
+  }
   return useFrom
 }

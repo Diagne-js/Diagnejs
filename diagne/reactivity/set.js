@@ -9,6 +9,8 @@ export const set = (callback, options = null) => {
   
   let changeFrom = new Error()
   changeFrom = usedFrom(changeFrom)
+  
+  console.log(changeFrom)
 
  let store = vStore
  let oldValue

@@ -24,9 +24,7 @@ for(const attr of targetAttributes){
   
    document.querySelectorAll(`[d-${attr}]`).forEach(el => {
      let store = globalStore.app
-     
       let val = el.getAttribute(`d-${attr}`)
-      console.log(val)
       if (val.includes('/#/')) {
         store = globalStore[val.split('/#/')[0].trim()]
         
