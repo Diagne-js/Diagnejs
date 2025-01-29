@@ -66,7 +66,7 @@ let createUsedTime = 0
 
 export const create = (init, options = null) => {
   let changeFrom = new Error()
-  changeFrom = usedFrom(changeFrom)
+  changeFrom = usedFrom(changeFrom, {identify: 'yes'})
   
     let localStore = store.app
     

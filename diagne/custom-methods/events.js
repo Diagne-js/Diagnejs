@@ -4,7 +4,7 @@ export const eventsStore = []
 
 
 export const event = (name, handler) => {
-   let from = usedFrom(new Error, {useRoot: true})
+   let from = usedFrom(new Error, {useRoot: true, identify: 'yes'})
    eventsStore.push({name: name, handler: handler, from})
 }
   
@@ -29,6 +29,10 @@ export const event = (name, handler) => {
          
          const matchedEvent =
       eventsStore.find(eS => eS.name == value[0] && eS.from == from)
+      
+      if (!matchedEvent) {
+          console.error(`the handler ${value} is not found`)
+      }
          
          const params = []
          

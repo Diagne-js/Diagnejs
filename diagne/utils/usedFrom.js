@@ -24,7 +24,7 @@ export const usedFrom = (useFrom, options = null) => {
        if (isComp) {
          useFrom = useFrom+'##0'
        }
-    }else{
+    }else if(options && options.identify == 'yes') {
       useFrom = componentsNames.at(-1)
     }
   }

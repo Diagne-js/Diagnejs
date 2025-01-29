@@ -98,6 +98,6 @@ export const home = () => {
          move to #{state.id}
      </button>
      
-     <Todo player=player/>
+     <Todo />
   `
 }
