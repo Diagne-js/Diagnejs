@@ -68,8 +68,6 @@ export const create = (init, options = null) => {
   let changeFrom = new Error()
   changeFrom = usedFrom(changeFrom)
   
-  //console.log(changeFrom)
-  
     let localStore = store.app
     
     let onComp = false

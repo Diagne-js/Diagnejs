@@ -4,10 +4,13 @@ import './test3564367434752/todo.js'
 
 component('Todo', (props) => {
    const todos = create([1,2])
+   let player = create('messie')
+   setInterval(() => set(() => player = 'Ronaldo'), 1000)
   return `
      <h1>my todo component</h1>
-     <Form placeholder='add a new todo' todos=todos />
-     <Form placeholder='add tags' todos=todos />
-    
+     { props.player }
+     <Form placeholder='add a new todo' player=player />
+     <Test />
+     { player }
   `
 })

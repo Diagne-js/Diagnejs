@@ -21,7 +21,9 @@ export const usedFrom = (useFrom, options = null) => {
   }
   if (isComp) {
     if (options && options.exist) {
-       
+       if (isComp) {
+         useFrom = useFrom+'##0'
+       }
     }else{
       useFrom = componentsNames.at(-1)
     }

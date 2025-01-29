@@ -48,7 +48,7 @@ export const findComponents = (html, from = 'app') => {
      
      matchedContent = specifyProvidence(matchedContent, name)
      
-     matchedContent = bindValues(matchedContent, name)
+     matchedContent = bindValues(matchedContent, name, from)
      
      if (matchedContent.match(findComponentsRegEx)) {
        matchedContent = findComponents(matchedContent, name)

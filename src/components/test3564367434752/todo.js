@@ -1,5 +1,7 @@
-import {component} from 'diagne' 
+import {component, create, set} from 'diagne' 
 
 component('Test', () => {
-  return `hey`
+  let y = create('hello')
+  setTimeout(() => set(() => y = 'hey'), 1200)
+  return `{y}`
 })
