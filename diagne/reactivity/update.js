@@ -17,7 +17,7 @@ export const update = (name, newValue, componentName = null) => {
   const localStore = store[componentName] || store.app
   
   variablesUsedBy_dFor.find((v,i) => {
-   if (v.name == name && Object.keys(newValue).length != v.length) {
+   if (v.name == name) {
       update_dFor(v,i)
     }
   })

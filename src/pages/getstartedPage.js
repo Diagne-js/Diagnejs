@@ -1,37 +1,72 @@
-import {create, set, event} from 'diagne'
+import { create, set, event, newWatch } from 'diagne'
 
 export const getStartedPage = () => {
-  
-  const setProduct = (product) => {
-    if (product == 'diagne js') {
-        return 'react'
-      }
-    else if (product == 'react') {
-        return 'vue'
-      }
-    else if (product == 'vue') {
-        return 'svelte'
-      }
-    else if (product == 'svelte') {
-        return 'diagne js'
-       }
-  }
-  
-   let product = create('diagne js',{setter: setProduct})
-   let products = create(['react', 'vue', 'svelte'])
-   
-   setTimeout(() => set(() => products = [...products, '...processing']),800)
-   setTimeout(() => set(() => products[3] = 'diagnejs'),2300)
-   
-   event('changeProduct', () => {
-     product = set('product')
-   })
-  
-    return`<h1>
-      Get started with { product }
-      <button onclick="changeProduct">
-        change product from {product}
-      </button>
-      <p for="Sproduct in products">{Sproduct}</p>
-    </h1>`
+
+  const quiz = [
+    {
+      question: 'who is the best',
+      options: [
+        'bill gates',
+        'Bamba Diagne',
+        'elon musk'
+      ],
+      right: 1
+    },
+    {
+      question: 'which is the best',
+      options: [
+        'Diagne.js',
+        'react',
+        'vue.js'
+      ],
+      right: 0
+    },
+    {
+      question: 'where is the best',
+      options: [
+        'USA',
+        'Dubaï',
+        'Senegal'
+      ],
+      right: 2
+    }
+  ]
+
+  let cIndex = create(0)
+  let current = create(quiz[cIndex])
+  let score = create(0)
+  let isPlaying = create(true)
+
+  newWatch(() => {
+    if (cIndex == quiz.length) {
+      set(() => isPlaying = false)
+      return
+    }
+    set(() => current = quiz[cIndex])
+  })
+
+  event('choice', (i) => {
+    if (i == current.right) {
+      set(() => score += 1)
+    }
+    set(() => cIndex += 1)
+  })
+
+  return `
+    <h1>Quiz</h1>
+    <br>
+    <br>
+    <br>
+    <div if='isPlaying'>
+    <h2>
+      {current.question}
+    </h2>
+    <ul>
+      <li for="option in current.options" onclick="choice: ::i">
+         {option}
+      </li>
+    </ul>
+    </div>
+    <div else>Your score is {score} / 3 </div>
+  `
 }

@@ -1,0 +1,26 @@
+///Todo
+
+# allow to use nested for
+
+# give the right type of value in the parals of events
+
+## make the event up to date with the variables
+
+## update even if the exact name isn't update but just the global object or array
+
+# reactivity with a props(A) from an other components using the props(A) as a props(A) |
+
+# allow to change a variable directly to the event attribute
+    ex: <button onclick="set(() => count += 1)">click me </button>
+  
+# newWatch methods must watch just the local component 
+
+#  A method that change value when a value of itself change
+    ex: let x = 1
+        let dbX = newDerived(() => x * 2)
+        console.log(dbX) // 2
+        
+        x = 2
+        console.log(dbX) // 4
+
+# newFetching method

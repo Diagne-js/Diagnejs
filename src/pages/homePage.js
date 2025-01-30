@@ -93,7 +93,7 @@ export const home = () => {
             d-class='wP[::i]'
         >{case}</div>
      </section>
-     <button onclick='jumpTo:start'>reset</button>
+     <button onclick="jumpTo:'start'">reset</button>
      <button for='state of states' onclick='jumpTo: ::i'>
          move to #{state.id}
      </button>

@@ -6,9 +6,8 @@ import { renderObjectsTree, usedFrom } from '../utils/utils.js'
 
 
 export const set = (callback, options = null) => {
-
   let changeFrom = new Error()
-  changeFrom = usedFrom(changeFrom, {exist: true})
+  changeFrom = usedFrom(changeFrom, { exist: true })
 
   let store = vStore
   let oldValue
@@ -30,8 +29,7 @@ export const set = (callback, options = null) => {
     oldValue = stocked.value
     stocked.value = newValue
 
-    if (componentName) update(target, newValue, componentName)
-    if (!componentName) update(target, newValue)
+    pickUpdate(target, newValue, componentName)
     useEffects(target, newValue, oldValue)
     return newValue
   }
@@ -72,6 +70,10 @@ export const set = (callback, options = null) => {
 
   oldValue = stocked.value
 
+  if (typeof newValue == 'object') {
+    updateItems(key, newValue, componentName, oldValue)
+  }
+
   if (newValue && typeof newValue == 'object' &&
     Object.keys(newValue).length >
     Object.keys(stocked.value).length && key == stocked.name) {
@@ -89,12 +91,17 @@ export const set = (callback, options = null) => {
 
   stocked.value = newValue
 
-  if (componentName) update(key, newValue, componentName)
-  if (!componentName) update(key, newValue)
-
+  pickUpdate(key, newValue, componentName)
   useEffects(key, newValue, oldValue)
   return callback
 }
+
+
+const pickUpdate = (name, newValue, componentName) => {
+  if (componentName) update(name, newValue, componentName)
+  if (!componentName) update(name, newValue)
+}
+
 
 const useEffects = (key, newValue, oldValue) => {
   if (!effects) return
@@ -106,5 +113,28 @@ const useEffects = (key, newValue, oldValue) => {
     if (effect.dependences.find(d => d == key)) {
       effect.callback(oldValue, newValue, key)
     }
+  }
+}
+
+const updateItems = (name, value, componentName, oldValue) => {
+  let tree = renderObjectsTree(value, name)
+  for (let i in tree) {
+    if (i == 0) {
+      continue
+    }
+    let b = tree[i]
+    let store = vStore
+    if (!componentName) {
+      store = store.app
+    } else {
+      store = vStore[componentName]
+    }
+    const pos = store.findIndex(s => s.name == b.name)
+    if (pos > -1) {
+      store[pos].value = b.value
+      pickUpdate(b.name, b.value, componentName)
+      useEffects(b.name, b.value, oldValue)
+    }
+
   }
 }
