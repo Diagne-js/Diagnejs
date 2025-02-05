@@ -23,8 +23,10 @@ export const addNames = (app, component = null, props = {}) => {
     localStore = store[component]
   }
   
-  if(!declarations(app) && Object.keys(props).length == 0) return
-  if (declarations(app)) {
+  const Ds = declarations(app)
+  
+  if(!Ds && Object.keys(props).length == 0) return
+  if (Ds) {
     for(const declaration of declarations(app)){
          if(declaration.includes("create(")) {
               const name = declaration.slice(declaration.indexOf(" "), 

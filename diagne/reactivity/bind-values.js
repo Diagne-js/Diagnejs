@@ -8,9 +8,7 @@ export const bindValues = (target, componentName = null, from = 'app') => {
   if (!dynamicsHtml) return target
 
   for (let dynHtml of dynamicsHtml) {
-
     let name = dynHtml.slice(1, dynHtml.length - 1).trim()
-
     if (componentName != null) {
       let value = dEval(componentName + '/#/ ' + name, false)
       if (value != undefined) {

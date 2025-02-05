@@ -25,6 +25,7 @@ export const newWatch = (callback, options) => {
   if (options) {
      if(options.callNow) callback()
      if(options.all) dependences = 'all'
+     if(options.dependences) dependences = options.dependences
   }
    effects.push({callback, dependences }) 
  }

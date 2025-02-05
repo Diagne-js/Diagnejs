@@ -54,7 +54,7 @@ export const dEval = (str, verify = true, from = 'root') => {
         let method = item.slice(item.lastIndexOf('.'))
         item = item.slice(0, item.indexOf(method))
         const matchedValue = localStore.find(s => s.name == item)
-        method = methodsIntoHtml.find(m => m == method.slice(1))
+        method = methodsIntoHtml[method.slice(1,method.indexOf(')')+1).trim()]
 
         if (!matchedValue) {
           if (verify) throw new ReferenceError(`${item} is not defined`)
@@ -65,9 +65,14 @@ export const dEval = (str, verify = true, from = 'root') => {
           items.push(matchedValue.value[savedLast])
           continue
         }
-
-        method = method.slice(0, method.indexOf('('))
-        items.push(matchedValue.value[method]())
+        item = matchedValue.value
+        
+        if (method.type == 'no param' ) {
+           item = method.action(item)
+        } else if (method.type == 'with param') {
+          
+        }
+        items.push(item)
       } else {
         const matchedValue = localStore.find(s => s.name == item)
         if (matchedValue == undefined) {
@@ -104,6 +109,7 @@ const unionOfItems = (items) => {
   if (!items[1]) {
     return items[0]
   }
+
   if (items[1] == "==") {
     finalExp = items[0] == items[2]
   }
@@ -146,9 +152,13 @@ const unionOfItems = (items) => {
   }
 
 
-  if (items[3] == "&&" || items[3] == '||') {
+  if (items[3] == "&&") {
     finalExp =
       finalExp && unionOfItems(items.slice(4, items.length))
+  } else if (items[1] == '&&') {
+    finalExp = items[0]
+    finalExp =
+      finalExp && unionOfItems(items.slice(2, items.length))
   } else if (items[3] == '+') {
     finalExp =
       finalExp + unionOfItems(items.slice(4, items.length))

@@ -1,12 +1,12 @@
 ///Todo
 
-# allow to use nested for
+## allow to use nested for
 
-# give the right type of value in the parals of events
+### manage d-disabled 
 
-## make the event up to date with the variables
+## allow to use components inside a for
 
-## update even if the exact name isn't update but just the global object or array
+## don't add a div with loop
 
 # reactivity with a props(A) from an other components using the props(A) as a props(A) |
 

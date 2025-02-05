@@ -11,26 +11,21 @@ import {dEval} from '../utils/d-eval.js'
 import {store} from '../reactivity/store.js'
 import {updateHTML} from './updateHtml.js'
 
-
-
 export const update = (name, newValue, componentName = null) => {
-  const localStore = store[componentName] || store.app
-  
-  variablesUsedBy_dFor.find((v,i) => {
-   if (v.name == name) {
+  const localStore = componentName && componentName != 'app' && componentName != 'root' ? store[componentName] : store.app
+  variablesUsedBy_dFor.map((v,i) => {
+   if (v.name == name && (v.isNum ||  newValue.length != v.length)) {
       update_dFor(v,i)
     }
   })
   
   updateHide(name)
   updateShow(name)
-  updateIf(name, componentName)
+  updateIf(name, newValue, componentName)
   updateValuesOfDynamicsValue(name,newValue)
   updateHTML(name, newValue, componentName)
+  updateHTML(name, newValue, componentName)
 }
-
-
-
 
 
 const update_dFor = (key,i) => {
@@ -40,7 +35,6 @@ const update_dFor = (key,i) => {
    })
    addEvents()
 }
-
 
 
 const updateHide = (key) => {
@@ -88,13 +82,7 @@ const updateShow = (key) => {
   })
 }
 
-
-
-
-
-
 const updateValuesOfDynamicsValue = (key,newValue) => {
-  
    for (let i in variablesUsedByDynAttributes) {
      const v = variablesUsedByDynAttributes[i]
      if (v.prop == 'disabled') {
@@ -102,7 +90,7 @@ const updateValuesOfDynamicsValue = (key,newValue) => {
        if (dEval(v.condition)) {
          v.el.disabled = true
        }
-     }else if (v.variableName == "anything") {
+     }else if (v.variableName != key && v.condition.includes(key)) {
          if (dEval(v.condition)) {
              v.el.setAttribute(v.prop, v.value)
          }else{
@@ -111,24 +99,19 @@ const updateValuesOfDynamicsValue = (key,newValue) => {
       }else if (v.variableName == key && 
           v.condition == 'the default value: true') {
                   v.el.setAttribute(v.prop, newValue)
-      }else if (v.variableName != key && 
-                v.condition.includes(key)) {
-                  
-            if (dEval(v.condition)) {
-                v.el.setAttribute(v.prop, v.value)
-            } else {
-                  v.el.setAttribute(v.prop, '')
-            }
-      } else if (v.variableName == key && 
+      }else if (v.variableName == key && 
                  v.condition != 'the default value: true'){
-             v.el.setAttribute(v.prop, newValue)
+             if (dEval(v.condition)) {
+               v.el.setAttribute(v.prop, newValue)
+             }
              v.value = newValue 
       }
    }
 }
 
 
-const updateIf = (name, from) => {
+const updateIf = (name, newValue,from) => {
+  let f = from
   if (from == null) {
     from = 'app'
   }
@@ -143,4 +126,5 @@ const updateIf = (name, from) => {
       if(ref.parent.contains(ref.target)) ref.target.remove()
      }
   }
+  
 }

@@ -16,7 +16,8 @@ export const App = () => {
     </a>
     <a to='/users/bamba'>
       bamba
-    </a>
+    </a><br>
+    <D_Spacing />
     <main id='view'>
     </main>
   `

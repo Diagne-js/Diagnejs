@@ -8,16 +8,11 @@ import {
     renderCorrectPath
 } from '../attributes/attributes.js'
 
-
 import {eventsStore, addEvents} from '../custom-methods/events.js'
-
 import {findComponents} from '../components/find-components.js'
-
 import {bindValues} from './bind-values.js'
-
 import {addNames} from './create.js'
-
-
+import {store} from './store.js'
 
 
 export const render = (app,selector, content = null) => {
@@ -35,7 +30,6 @@ export const render = (app,selector, content = null) => {
     str = app()
   }
   str = bindValues(str)
-  
   str = findComponents(str)
   
   const target = document.querySelector(selector)

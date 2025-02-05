@@ -1,7 +1,7 @@
 import { routes } from '../../src/routes.js'
 import { render, store, resetData } from '../reactivity/reactivity.js'
 import { gettingToPageDatasStore } from '../custom-methods/page-datas.js'
-import { variablesUsedBy_dFor } from '../attributes/attributes.js'
+import { addEvents } from '../custom-methods/custom-methods.js'
 
 let keepedAlive = []
 
@@ -59,8 +59,8 @@ const findDLinks = () => {
 
 export const navigate = (path, params = [], newPath = true) => {
   if (window.location.pathname == path) return
-  
-  if(newPath) window.history.pushState({}, '', path);
+
+  if (newPath) window.history.pushState({}, '', path);
   if (!pages.find(p => p.path == path)) {
     renderRoute(path, params);
     return
@@ -69,20 +69,24 @@ export const navigate = (path, params = [], newPath = true) => {
 };
 
 const toAnUsedPage = (path) => {
-    resetData()
-    const page = pages.find(p => p.path == path )
-    if (!page) {
-      renderRoute(path)
-      return
-    }
-   render(page.content(), '#view', page.content)
-   activateGetPageData(path)
+  resetData()
+  const page = pages.find(p => p.path == path)
+  if (!page) {
+    renderRoute(path)
+    return
+  }
+  page.content()
+  activateGetPageData(path)
+  addEvents()
+  findDLinks()
 }
+
+let firstRender = true
 
 const renderRoute = (path, params = []) => {
   if (routes.length == 0) return
 
-  const route = routes.find(r => r["path"] == path) ||
+  const route = routes.find(r => r['path'] == path) ||
     routes.find(r => r.path == "*") || { path: "404", content: () => `
           <h1 style='text-align:center'>404</h1>
           <h4 style='text-align:center'>Not Found</h4>
@@ -92,15 +96,16 @@ const renderRoute = (path, params = []) => {
 
   let content = route.content;
 
-  resetData()
+  if (!firstRender) resetData()
 
-  let page = ''
+  let page = null
   if (route.path == '404') {
     activateGetPageData('404')
     document.querySelector("#view").innerHTML = content()
     return
   } else if (route.path == '*') {
-    page = () => render(content(path), '#view', content)
+    activateGetPageData('*')
+    render(content(path), '#view', content)
   } else
   if (params.length > 0 && route.type == 'dynamic') {
     page = () => render(content(route.ref, ...params), '#view', content)
@@ -112,10 +117,13 @@ const renderRoute = (path, params = []) => {
     page = () => render(content, '#view')
   }
 
-  page()
-  pages.push({ path, content: page })
+  if (page) {
+    page()
+    pages.push({ path, content: page })
+  }
   activateGetPageData(path)
   findDLinks()
+  firstRender = false
 };
 
 // Event delegation for efficient event handling

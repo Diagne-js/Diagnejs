@@ -6,15 +6,15 @@ import { renderObjectsTree, usedFrom } from '../utils/utils.js'
 
 
 export const set = (callback, options = null) => {
-  let changeFrom = new Error()
-  changeFrom = usedFrom(changeFrom, { exist: true })
+ let changeFrom = new Error()
+  changeFrom = options && options.from ? options.from : usedFrom(changeFrom, { exist: true })
 
   let store = vStore
   let oldValue
-
+  
   let componentName = null
 
-  if (!changeFrom.includes('Page') && changeFrom != 'app') {
+  if (changeFrom.includes('##')) {
     componentName = changeFrom[0].toUpperCase() + changeFrom.slice(1)
     store = store[componentName]
   } else {

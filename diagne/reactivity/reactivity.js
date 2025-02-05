@@ -5,5 +5,5 @@ export {newWatch, effects} from './watch-effect.js'
 export {store} from './store.js'
 export {bindValues} from './bind-values.js'
 export {resetData} from './resetData.js'
-
+export {update} from './update.js'
 

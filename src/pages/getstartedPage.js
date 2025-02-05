@@ -1,4 +1,5 @@
 import { create, set, event, newWatch } from 'diagne'
+import '../components/Progress.js'
 
 export const getStartedPage = () => {
 
@@ -36,37 +37,84 @@ export const getStartedPage = () => {
   let current = create(quiz[cIndex])
   let score = create(0)
   let isPlaying = create(true)
+  let hasAnswer = create(false)
+  let style = create(`
+         width:${cIndex * 100}px;
+         height: 5px;
+         border-radius: 5px;
+         background:blue;
+         transition:0.5s ease-in-out;
+  `)
 
   newWatch(() => {
     if (cIndex == quiz.length) {
-      set(() => isPlaying = false)
+      setTimeout(() => {
+        set(() => isPlaying = false)
+        set(() => score = score)
+      }, 600)
       return
     }
     set(() => current = quiz[cIndex])
+  }, {dependences: ['cIndex']})
+
+  newWatch(() => {
+    set(() => style = `
+         width:${cIndex * 100}px;
+         height: 5px;
+         border-radius: 5px;
+         background:blue;
+         transition:0.5s ease-in-out;
+  `)
   })
 
-  event('choice', (i) => {
+  let timer
+
+  event('choice', (e, i) => {
+    set(() => hasAnswer = true)
     if (i == current.right) {
       set(() => score += 1)
+    } else {
+      e.target.className = 'red'
     }
-    set(() => cIndex += 1)
+    setTimeout(() => {
+      set(() => cIndex += 1)
+      set(() => hasAnswer = false)
+      e.target.className = ''
+    }, 1_000)
+  })
+  
+  event('replay', () => {
+    set(() => cIndex = 0)
+    set(() => isPlaying = true)
+    set(() => score = 0 )
+    set(() => current = quiz[cIndex])
   })
 
   return `
     <h1>Quiz</h1>
-    <br>
-    <br>
-    <br>
     <div if='isPlaying'>
-    <h2>
-      {current.question}
-    </h2>
+    <D_Spacing size= 1/>
+     <div style="width:304px; overflow: hidden; border:solid 1px gray; padding: 1px; border-radius: 8px;">
+    <div d-style="style"></div>
+    </div>
+    <D_Spacing size= 1/>
+    <h2>{current.question}</h2>
+    <D_Spacing size= 2/>
     <ul>
-      <li for="option in current.options" onclick="choice: ::i">
-         {option}
-      </li>
+      <button style='display:block; background:transparent '
+            for="option in current.options"
+            d-class="hasAnswer && ::i == current.right => 'green'"
+            d-disabled="hasAnswer"
+            onclick="choice: ::i">
+            {option}
+            <D_Spacing size=2/>
+      </button>
     </ul>
     </div>
-    <div else>Your score is {score} / 3 </div>
+    <div else>
+        Your score is { score } / 3
+        <D_Spacing size=3 />
+        <button onclick='replay'>replay</button>
+    </div>
   `
 }

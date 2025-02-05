@@ -2,4 +2,4 @@ export const store = {
   app: []
 }
 
-setTimeout(() => console.log(store), 1000)
+//setTimeout(() => document.querySelectorAll('[data-binding]').forEach(el => console.log(el.getAttribute('data-binding'))), 500)

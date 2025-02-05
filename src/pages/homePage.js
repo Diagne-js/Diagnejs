@@ -1,17 +1,17 @@
-import {create, set, event, newWatch, getPageDatas} from 'diagne'
+import {D, getPageDatas} from 'diagne'
 import '../components/todo.js'
 
 
 export const home = () => {
   const array = ['','','','','','','','','']
-  
   const setPlayer = (player) => player == 'X' ? 'O' : 'X'
 
-  let board = create(array)
-  let player = create('X', {setter:setPlayer})
-  let isWinner = create(false)
-  let states = create([])
-  let wP = create(array)
+  let board = D.create([...array])
+  let player = D.create('X', {setter:setPlayer})
+  let isWinner = D.create(false)
+  let wP = D.create([...array])
+  let statesLength = D.create(0)
+  let states = []
   
   const winPositions = [
      [0,1,2],
@@ -28,64 +28,62 @@ export const home = () => {
     for (let pos of winPositions) {
        const [a,b,c] = pos
        if (board[a] != '' && board[a] == board[b] && board[a] == board[c]) {
-         set(() => isWinner = true)
+         D.set(() => isWinner = true)
          if (player == 'O') {
-           set(() => wP[a] = 'green',{a:a})
-           set(() => wP[b] = 'green',{b:b})
-           set(() => wP[c] = 'green',{c:c})
+           D.set(() => wP[a] = 'green',{a:a})
+           D.set(() => wP[b] = 'green',{b:b})
+           D.set(() => wP[c] = 'green',{c:c})
          }else{
-           set(() => wP[a] = 'red',{a:a})
-           set(() => wP[b] = 'red',{b:b})
-           set(() => wP[c] = 'red',{c:c})
+           D.set(() => wP[a] = 'red',{a:a})
+           D.set(() => wP[b] = 'red',{b:b})
+           D.set(() => wP[c] = 'red',{c:c})
          }
        }
     }
   }
   
-  event('play', (i) => {
+  D.event('play', (i) => {
     if (isWinner) return
-    i = parseFloat(i)
     if(board[i] == '') { 
-       set(() => board[i] = player,{i:i})
+       D.set(() => board[i] = player,{i})
+       D.set(() => statesLength += 1)
         checkWin()
-        set(() => states = [...states, {
+       states = [...states, {
                  board: [...board],
                  wp: [...wP],
                  player: player,
                  isWinner: isWinner,
                  id: states.length + 1
               }
-        ])
-        player = set('player')
+        ]
+        player = D.set('player')
     }
   })
   
   
-  event('jumpTo',  (target) => {
+  D.event('jumpTo',  (target) => {
     if (target != 'start') {
-      const id = parseFloat(target)
+      const id = target
       const state = states[id]
-  
-      for (var i = 0; i < board.length; i++) {
-         set(() => board[i] = state.board[i], {i:i})
-         set(() => wP[i] = state.board[i], {i:i})
-      }
-      set(()=> player = state.player == 'X' ? 'O' : 'X')
-      set(() => isWinner = state.isWinner)
+      
+      D.set(() => board = state.board)
+      D.set(() => wP = [...array])
+         
+      D.set(() => player = state.player == 'X' ? 'O' : 'X')
+      D.set(() => isWinner = state.isWinner)
       return
     }
-       for (var i = 0; i < 9; i++) {
-         set(() => board[i] = '', {i})
-         set(() => wP[i] = '', {i})
-       }
-       set(() => states = [])
-       set(() => isWinner = false)
+    D.set(() => board = [...array])
+    D.set(() => wP = [...array])
+    states = []
+    D.set(() => isWinner = false)
   })
   
   return `
      <h1>Morpion game</h1>
     <p if='isWinner'>{player} has lose</p>
-     <p else>next player is { player }</p>
+    <p else>next player is { player }</p>
+     
      <section class='morpion'>
         <div 
             for='case from board'
@@ -94,10 +92,10 @@ export const home = () => {
         >{case}</div>
      </section>
      <button onclick="jumpTo:'start'">reset</button>
-     <button for='state of states' onclick='jumpTo: ::i'>
-         move to #{state.id}
+     <button for='let l = 0 from statesLength' onclick='jumpTo: l'>
+         move to #{l}
      </button>
-     
+     <Todo />
      <Todo />
   `
 }
