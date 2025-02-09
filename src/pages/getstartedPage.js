@@ -2,8 +2,7 @@ import { create, set, event, newWatch } from 'diagne'
 import '../components/Progress.js'
 
 export const getStartedPage = () => {
-
-  const quiz = [
+  const quiz = create([
     {
       question: 'who is the best',
       options: [
@@ -31,7 +30,7 @@ export const getStartedPage = () => {
       ],
       right: 2
     }
-  ]
+  ])
 
   let cIndex = create(0)
   let current = create(quiz[cIndex])
@@ -93,6 +92,13 @@ export const getStartedPage = () => {
   return `
     <h1>Quiz</h1>
     <div if='isPlaying'>
+    <D_Spacing size= 1/>
+      Tab to edit
+    </div>
+    <div for='question in quiz'>
+       <h1>{question.question}</h1>
+         <li for='option in question.options'>{option}</li>
+    </div>
     <D_Spacing size= 1/>
      <div style="width:304px; overflow: hidden; border:solid 1px gray; padding: 1px; border-radius: 8px;">
     <div d-style="style"></div>

@@ -42,7 +42,7 @@ export const findComponents = (html, from = 'app') => {
     
     componentsNames.push(name)
     props.$from = name
-
+    
     addNames(matchedContent, name, props)
     matchedContent = matchedContent(props)
     matchedContent = specifyProvidence(matchedContent, name)

@@ -96,6 +96,5 @@ export const home = () => {
          move to #{l}
      </button>
      <Todo />
-     <Todo />
   `
 }

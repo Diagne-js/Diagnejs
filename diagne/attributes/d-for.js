@@ -14,8 +14,12 @@ const attributes = [...specialsAttributes]
 
 export const dFor = (l = null) => {
   const targets = document.querySelectorAll('[for]')
-
+  
   for(const target of [...targets]) {
+    if (target.parentElement && target.parentElement.hasAttribute('for')) {
+      console.log('hey')
+       continue
+    }
     let value = target.getAttribute("for");
     let localStore = store.app
 
@@ -103,6 +107,10 @@ export const dFor = (l = null) => {
     `
     target.insertAdjacentHTML('beforebegin', template);
     target.remove();
+    
+    if (html.includes('for   =')) {
+      dFor()
+    }
   };
   dShow();
   dHide();
@@ -144,7 +152,6 @@ const includesAttributes = (str, isForFrom, itemName, iterable, i) => {
         if (isForFrom) {
           value = primValue.replaceAll(itemName, `${i}`);
         } else {
-          // Ajoute l'itérable correctement pour transformer item.id en items[i].id
           value = primValue.replace(new RegExp(`\\b${itemName}\\b`, 'g'), `${iterable}[${i}]`);
         }
 

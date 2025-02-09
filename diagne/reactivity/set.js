@@ -7,8 +7,7 @@ import { renderObjectsTree, usedFrom } from '../utils/utils.js'
 
 export const set = (callback, options = null) => {
  let changeFrom = new Error()
-  changeFrom = options && options.from ? options.from : usedFrom(changeFrom, { exist: true })
-
+  changeFrom = options && options.from ? options.from : usedFrom(changeFrom, { identify: 'yes' })
   let store = vStore
   let oldValue
   
