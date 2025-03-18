@@ -19,7 +19,7 @@ export const usedFrom = (useFrom, options = null) => {
   } else if (options && options.useRoot) {
     useFrom = 'root'
   }
-  if (isComp && options.identify == 'yes') {
+  if (isComp && options.identify != 'no') {
     useFrom = componentsNames.at(-1)
   }
   return useFrom

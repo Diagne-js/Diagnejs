@@ -1,11 +1,15 @@
 import {store} from './store.js'
+import {usedFrom} from '../utils/utils.js'
 
 export const effects = [];
 
 export const newWatch = (callback, options) => {
   const str = callback.toString()
+  let from = options && options.from ? 
+             options.from : usedFrom(new Error, {useRoot: true})
+  const localStore = from == 'root' ? store.app : store[from]
   let dependences = []
-  store.app.map(s => s = s.name).forEach(s => {
+  localStore.map(s => s = s.name).forEach(s => {
     if (str.includes(s)) {
       dependences.push(s)
     }
@@ -13,7 +17,7 @@ export const newWatch = (callback, options) => {
   
   
   if (dependences.length == 0) {
-     dependences = 'all'
+    dependences = 'all'
   } else if (dependences.length > 0) {
     for (let dp of dependences) {
        if (str.includes(dp+ ' = ')) {
@@ -27,5 +31,5 @@ export const newWatch = (callback, options) => {
      if(options.all) dependences = 'all'
      if(options.dependences) dependences = options.dependences
   }
-   effects.push({callback, dependences }) 
+   effects.push({callback, dependences, from }) 
  }

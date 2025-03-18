@@ -5,26 +5,41 @@ import {
 } from './reactivity/reactivity.js'
 
 import { seo } from './seo/seo.js'
-import { event } from './custom-methods/events.js'
+import { event, getPageDatas, newStyle } from './custom-methods/index.js'
 import { newBind } from './attributes/attributes.js'
 import { navigate, redirect, newRoute } from './routing/index.js'
-export { getPageDatas } from './custom-methods/page-datas.js'
 import { component } from './components/componentsStore.js'
-export { reUse } from './components/reUse.js'
-
-export { 
-    create, set, newWatch, seo, event, newBind,
-    navigate, redirect, newRoute,
-    component
+import { reUse } from './components/reUse.js'
+export {newFetching} from './custom-methods/newFetching.js'
+export {
+  create,
+  set,
+  newWatch,
+  seo,
+  event,
+  newBind,
+  navigate,
+  redirect,
+  newRoute,
+  component,
+  reUse,
+  getPageDatas,
+  newStyle
 }
 
 
 export const D = {
-  watch: newWatch,
   create,
   set,
-  bind: newBind,
+  newWatch,
+  seo,
   event,
+  newBind,
+  navigate,
+  redirect,
+  newRoute,
   component,
-  seo
+  reUse,
+  newStyle,
+  getPageDatas
 }

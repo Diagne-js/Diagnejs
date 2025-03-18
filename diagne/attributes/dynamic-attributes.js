@@ -11,12 +11,12 @@ export const targetAttributes = [
    'disabled',
    'style',
    'href',
-   'src'
+   'src',
+   'to'
 ]
 
 
 export const variablesUsedByDynAttributes = []
-
 
 export const useDynamicsAttributes = () => {
 
@@ -63,9 +63,12 @@ export const useDynamicsAttributes = () => {
 
       if (condition) {
         if (attr != 'disabled') el.setAttribute(attr, dynamicValue)
-        if (attr == 'disabled') el.disabled = true
-      } else {
-        if (attr == 'disabled') el.disabled = false
+        if (attr == 'disabled') {
+          el.disabled = true
+          el.style.opacity = 0.5;
+        }
+      } else if (attr == 'disabled') {
+           el.disabled = false
       }
 
       el.removeAttribute('d-' + attr)

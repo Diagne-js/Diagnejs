@@ -13,22 +13,12 @@ import {findComponents} from '../components/find-components.js'
 import {bindValues} from './bind-values.js'
 import {addNames} from './create.js'
 import {store} from './store.js'
+import {resetData} from './resetData.js'
+import {provide} from '../utils/utils.js'
 
 
-export const render = (app,selector, content = null) => {
-  
-   if (content) {
-     addNames(content)
-   }else{
-     addNames(app)
-   }
-  
-  let str
-  if (content) {
-    str = app
-  }else{
-    str = app()
-  }
+export const render = (app,selector) => {
+  let str = app()
   str = bindValues(str)
   str = findComponents(str)
   
@@ -36,12 +26,12 @@ export const render = (app,selector, content = null) => {
   
   target.innerHTML = str
   renderCorrectPath()
+  dIf()
   dFor()
   useDynamicsAttributes()
   dHide()
   dShow()
   addEvents()
   activeBindings()
-  dIf()
   return target.innerHTML 
 }

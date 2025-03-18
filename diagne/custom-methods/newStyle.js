@@ -2,9 +2,10 @@ import { store } from '../reactivity/reactivity.js'
 
 export const newStyle = (obj) => {
   let style = ''
-  if (style) {
+  if (obj) {
     for (let key of Object.keys(obj)) {
-      style += `${key}: ${obj[key]};`
+      const prop = key.replaceAll('_', '-')
+      style += `${prop}: ${obj[key]};`
     }
    return style
   }

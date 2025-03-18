@@ -2,8 +2,6 @@
 
 ## allow to use nested for
 
-### manage d-disabled 
-
 ## allow to use components inside a for
 
 ## don't add a div with loop

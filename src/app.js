@@ -1,11 +1,13 @@
 import { create, set, event} from 'diagne' 
 
 export const App = () => {
+  
+ // setInterval(() => set(() => x += 1), 1000)
   return `
     <a to='/'>
       home
     </a>
-    <a to='/get-started'>
+    <a to='/users'>
       get started
     </a>
     <a to='/sign-in'>
@@ -18,6 +20,7 @@ export const App = () => {
       bamba
     </a><br>
     <D_Spacing />
+    {x}
     <main id='view'>
     </main>
   `

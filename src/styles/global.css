@@ -20,7 +20,6 @@
 
 body{
   background: white;
-  padding: 15px 15px;
 }
 
 [data-for = "board"]{
@@ -81,3 +80,86 @@ textarea{
 input[type="checkbox"]{
   width:20px;
 }
+
+#container{
+  width: 100%;
+  height: 90svh;
+  position: absolute;
+  background: linear-gradient(45deg, black 50%, #2babffab 60%, black 80%);
+  display: grid;
+  grid-template-rows:7fr 1fr;
+  grid-template-columns: 1fr;
+   .post{
+     overflow: hidden;
+     position:relative;
+     width: 100%;
+     height: 100%;
+  .content{
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    transition: translate 1s  ease-in-out;
+    width: 100%;
+    height: 100%;
+    section{
+      h1{
+      margin: 40px 10px 20px 30px;
+      color: #15b6ff;
+      font-size:1.2rem;
+      }
+      
+      p{
+      color: #d0d0d0;
+      font-size: 1rem;
+      padding: 20px;
+      max-width: 500px;
+      }
+      
+      h2{
+          color: #15b6ff;
+          font-size:0.6rem;
+          padding-left: 25px;
+        }
+      
+      .toDiscover{
+        width: 50%;
+        min-width: 250px;
+        max-width: 500px;
+        padding:40px 20px 40px 50px;
+        border-radius: 14px;
+        border: solid 2px #2a2a2aa0;
+        background: linear-gradient(45deg, #15a1ff2e 50%,#15cbff62 70%);
+        backdrop-filter: blur(14px);
+       
+        margin:20px 30px;
+        li{
+          color: #ffc700;
+          margin: 10px 0;
+        }
+        
+      }
+    }
+  }
+  }
+}
+
+
+ 
+#container .stepsBtns{
+     display: flex;
+     align-items: center;
+     justify-content:center;
+     button{
+       width: 150px;
+       height: 40px;
+       background: transparent;
+       color: #d9d9d9f3;
+       border-radius:5px;
+     }
+     button:nth-child(1){
+       background: #C617173D;
+      }
+     button:nth-child(2){
+       background: linear-gradient(45deg, #2082c2 50%,#15cbfff3 70%);
+       margin-left:40px;
+     }
+  }

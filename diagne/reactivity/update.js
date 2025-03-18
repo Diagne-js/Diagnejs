@@ -3,7 +3,6 @@ import {
   dHide,
   dShow,
   dIf,
-  dIfStore,
   variablesUsedByDynAttributes
 } from '../attributes/attributes.js';
 import {addEvents} from '../custom-methods/events.js'
@@ -21,7 +20,6 @@ export const update = (name, newValue, componentName = null) => {
   
   updateHide(name)
   updateShow(name)
-  updateIf(name, newValue, componentName)
   updateValuesOfDynamicsValue(name,newValue)
   updateHTML(name, newValue, componentName)
   updateHTML(name, newValue, componentName)
@@ -87,8 +85,10 @@ const updateValuesOfDynamicsValue = (key,newValue) => {
      const v = variablesUsedByDynAttributes[i]
      if (v.prop == 'disabled') {
        v.el.disabled = false
+       v.el.style.opacity = 1
        if (dEval(v.condition)) {
          v.el.disabled = true
+         v.el.style.opacity = 0.5;
        }
      }else if (v.variableName != key && v.condition.includes(key)) {
          if (dEval(v.condition)) {
@@ -107,24 +107,4 @@ const updateValuesOfDynamicsValue = (key,newValue) => {
              v.value = newValue 
       }
    }
-}
-
-
-const updateIf = (name, newValue,from) => {
-  let f = from
-  if (from == null) {
-    from = 'app'
-  }
-  
-  const ref = dIfStore.find(r => r.from == from && r.condition.includes(name))
-  if (ref) {
-     if (dEval(ref.condition)) {
-             if(!ref.parent.contains(ref.target))  ref.parent.insertBefore(ref.target, ref.ref)
-        if (ref.ref.hasAttribute('else')) ref.ref.remove()
-     }else{
-       if (ref.ref.hasAttribute('else')) ref.target.insertAdjacentElement('afterend', ref.ref)
-      if(ref.parent.contains(ref.target)) ref.target.remove()
-     }
-  }
-  
 }

@@ -9,3 +9,5 @@ export {usedFrom} from './usedFrom.js'
 export {specialsAttributes} from './specials-attributes.js'
 
 export {methodsIntoHtml} from './methodsIntoHtml.js'
+
+export {provide} from './provide.js'

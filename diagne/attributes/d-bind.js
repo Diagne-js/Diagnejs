@@ -1,10 +1,10 @@
 export const bindStore = []
 
 
-export const newBind = (callback,name) => {
+export const newBind = (name, callback) => {
        const binding = {
          actions: (el) => {
-            callback(el.value)
+            callback(el)
             el.oninput = () => callback(el.value)
             el.removeAttribute('bind')
          },

@@ -1,16 +1,23 @@
-import {D, getPageDatas} from 'diagne'
-import '../components/todo.js'
+import {D, create, getPageDatas} from 'diagne'
+import '../components/Todo.js'
 
 
 export const home = () => {
   const array = ['','','','','','','','','']
   const setPlayer = (player) => player == 'X' ? 'O' : 'X'
+  
+  const style = create(
+    D.newStyle({
+    color: 'red',
+    background: 'green',
+  })
+  )
 
-  let board = D.create([...array])
-  let player = D.create('X', {setter:setPlayer})
-  let isWinner = D.create(false)
-  let wP = D.create([...array])
-  let statesLength = D.create(0)
+  let board = create([...array])
+  let player = create('X', {setter:setPlayer})
+  let isWinner = create(false)
+  let wP = create([...array])
+  let statesLength = create(0)
   let states = []
   
   const winPositions = [
@@ -81,7 +88,7 @@ export const home = () => {
   
   return `
      <h1>Morpion game</h1>
-    <p if='isWinner'>{player} has lose</p>
+    <p if='isWinner == true'>{player} has lose</p>
     <p else>next player is { player }</p>
      
      <section class='morpion'>
@@ -96,5 +103,6 @@ export const home = () => {
          move to #{l}
      </button>
      <Todo />
+   
   `
 }

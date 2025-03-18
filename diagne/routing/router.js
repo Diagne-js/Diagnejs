@@ -1,7 +1,7 @@
 import { routes } from '../../src/routes.js'
-import { render, store, resetData } from '../reactivity/reactivity.js'
+import { render, store, resetData, addNames} from '../reactivity/reactivity.js'
 import { gettingToPageDatasStore } from '../custom-methods/page-datas.js'
-import { addEvents } from '../custom-methods/custom-methods.js'
+import { addEvents } from '../custom-methods/index.js'
 
 let keepedAlive = []
 
@@ -41,7 +41,7 @@ const addDynamicsRoutes = () => {
 addDynamicsRoutes()
 
 
-const findDLinks = () => {
+export const findDLinks = () => {
   document.querySelectorAll('a').forEach(link => {
     if (link.hasAttribute("to")) {
 
@@ -75,6 +75,7 @@ const toAnUsedPage = (path) => {
     renderRoute(path)
     return
   }
+  addNames(page.mainContent)
   page.content()
   activateGetPageData(path)
   addEvents()
@@ -85,7 +86,6 @@ let firstRender = true
 
 const renderRoute = (path, params = []) => {
   if (routes.length == 0) return
-
   const route = routes.find(r => r['path'] == path) ||
     routes.find(r => r.path == "*") || { path: "404", content: () => `
           <h1 style='text-align:center'>404</h1>
@@ -93,33 +93,37 @@ const renderRoute = (path, params = []) => {
           <small>the path ${path} is not found !</small>
       ` }
 
-
+  if (route.params) {
+    params = route.params
+  }
   let content = route.content;
 
   if (!firstRender) resetData()
 
   let page = null
+  
   if (route.path == '404') {
     activateGetPageData('404')
     document.querySelector("#view").innerHTML = content()
     return
   } else if (route.path == '*') {
     activateGetPageData('*')
-    render(content(path), '#view', content)
+    render(() => content(path), '#view')
   } else
-  if (params.length > 0 && route.type == 'dynamic') {
-    page = () => render(content(route.ref, ...params), '#view', content)
-  } else if (params.length > 0 && route.type != 'dynamic') {
-    page = () => render(content(...params), '#view', content)
+  if (Object.keys(params).length > 0 && route.type == 'dynamic') {
+    page = () => render(() => content(route.ref, params),'#view')
+  } else if (Object.keys(params).length > 0 && !route.type) {
+    page = () => render(() => content(params), '#view')
   } else if (route.type == "dynamic") {
-    page = () => render(content(route.ref), '#view', content)
+    page = () => render(() => content(route.ref), '#view')
   } else {
-    page = () => render(content, '#view')
+    page = () => render(() => content(), '#view')
   }
 
   if (page) {
+    addNames(content)
     page()
-    pages.push({ path, content: page })
+    pages.push({ path, content: page, mainContent: content})
   }
   activateGetPageData(path)
   findDLinks()

@@ -1,4 +1,4 @@
-export {navigate} from './router.js'
+export {navigate, findDLinks} from './router.js'
 
 export {redirect} from './redirect.js'
 

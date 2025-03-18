@@ -1,5 +1,6 @@
 import { store } from '../reactivity/reactivity.js'
 import { renderObjectsTree, specialsAttributes, dEval } from '../utils/utils.js'
+import {findDLinks} from '../routing/index.js'
 import {
   dShow,
   dHide,
@@ -14,10 +15,8 @@ const attributes = [...specialsAttributes]
 
 export const dFor = (l = null) => {
   const targets = document.querySelectorAll('[for]')
-  
   for(const target of [...targets]) {
     if (target.parentElement && target.parentElement.hasAttribute('for')) {
-      console.log('hey')
        continue
     }
     let value = target.getAttribute("for");
@@ -65,6 +64,7 @@ export const dFor = (l = null) => {
     stock(iterableStr, iterable.length, innerToSave, l)
     
     let template = `<div data-for='${tracker}'></div>`
+    
     if (iterable.length == 0) {
       target.insertAdjacentHTML('beforebegin', template);
       target.remove();
@@ -107,15 +107,13 @@ export const dFor = (l = null) => {
     `
     target.insertAdjacentHTML('beforebegin', template);
     target.remove();
-    
-    if (html.includes('for   =')) {
-      dFor()
-    }
   };
   dShow();
   dHide();
   activeBindings()
+  dIf()
   useDynamicsAttributes()
+  findDLinks()
 }
 
 
@@ -166,11 +164,11 @@ const includesAttributes = (str, isForFrom, itemName, iterable, i) => {
 
 
 const provideIndex = (target, i) => {
-  target = target.replaceAll('::i', i)
   for (var n = 1; n < 20; n++) {
     i = parseFloat(i)
     target = target.replaceAll(`::i+${n}`, i + n)
     target = target.replaceAll(`::i-${n}`, i - n)
   }
+  target = target.replaceAll('::i', i)
   return target
 }

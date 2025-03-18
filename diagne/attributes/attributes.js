@@ -6,7 +6,7 @@ export {dShow} from './d-show.js'
 
 export {newBind, bindStore, activeBindings} from './d-bind.js'
 
-export {dIf, dIfStore} from './d-if.js'
+export {dIf} from './d-if.js'
 
 export {renderCorrectPath} from './correct-path.js'
 

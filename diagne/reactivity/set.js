@@ -1,8 +1,7 @@
-import { effects, render } from './reactivity.js'
+import { effects, render} from './reactivity.js'
 import { update } from './update.js'
 import { store as vStore } from './store.js'
 import { renderObjectsTree, usedFrom } from '../utils/utils.js'
-
 
 
 export const set = (callback, options = null) => {
@@ -29,7 +28,7 @@ export const set = (callback, options = null) => {
     stocked.value = newValue
 
     pickUpdate(target, newValue, componentName)
-    useEffects(target, newValue, oldValue)
+    useEffects(target, newValue, oldValue, changeFrom)
     return newValue
   }
 
@@ -43,7 +42,7 @@ export const set = (callback, options = null) => {
   if (options) {
     const keys = Object.keys(options)
     for (let key of keys) {
-      action = action.replaceAll(key, options[key])
+      action = action.replaceAll(`[${key}]`, '['+options[key]+']')
     }
   }
 
@@ -64,13 +63,12 @@ export const set = (callback, options = null) => {
   }
   const stockedIndex = store.findIndex(s => s.name == key)
   const stocked = store[stockedIndex]
-
+  
   if (!stocked) return callback
 
   oldValue = stocked.value
-
   if (typeof newValue == 'object') {
-    updateItems(key, newValue, componentName, oldValue)
+    updateItems(key, newValue, componentName, oldValue, changeFrom)
   }
 
   if (newValue && typeof newValue == 'object' &&
@@ -91,7 +89,7 @@ export const set = (callback, options = null) => {
   stocked.value = newValue
 
   pickUpdate(key, newValue, componentName)
-  useEffects(key, newValue, oldValue)
+  useEffects(key, newValue, oldValue, changeFrom)
   return callback
 }
 
@@ -102,20 +100,22 @@ const pickUpdate = (name, newValue, componentName) => {
 }
 
 
-const useEffects = (key, newValue, oldValue) => {
+const useEffects = (key, newValue, oldValue, from) => {
   if (!effects) return
   for (const effect of effects) {
     if (effect.dependences == 'all') {
       effect.callback(oldValue, newValue, key)
       continue
     }
-    if (effect.dependences.find(d => d == key)) {
+    from = from.includes('Page') ? 'app' : from
+    
+    if (effect.from == from && effect.dependences.find(d => d == key) ) {
       effect.callback(oldValue, newValue, key)
     }
   }
 }
 
-const updateItems = (name, value, componentName, oldValue) => {
+const updateItems = (name, value, componentName, oldValue, from) => {
   let tree = renderObjectsTree(value, name)
   for (let i in tree) {
     if (i == 0) {
@@ -132,7 +132,7 @@ const updateItems = (name, value, componentName, oldValue) => {
     if (pos > -1) {
       store[pos].value = b.value
       pickUpdate(b.name, b.value, componentName)
-      useEffects(b.name, b.value, oldValue)
+      useEffects(b.name, b.value, oldValue, from)
     }
 
   }

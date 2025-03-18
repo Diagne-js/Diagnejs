@@ -1,5 +1,4 @@
 import {event, redirect, newRoute, create,set} from 'diagne'
-import {userPage} from './userPage.js'
 
 export const signInPage = () => {
   let accounts = create([])

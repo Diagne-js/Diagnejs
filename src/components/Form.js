@@ -1,9 +1,13 @@
-import {component, event, create, set} from 'diagne'
+import {component, event, create, set, newWatch} from 'diagne'
 
 component('Form', ({addTodo, $from}) => {
+  const from = $from
   let newTodo = create('')
-  let i = 0
-  event('writing', (e) => set(() => newTodo = e.target.value),{from:$from})
+  let i = 0;
+  event('writing', (e) => {
+    set(() => newTodo = e.target.value,{from})
+  })
+  
   event('addTodo', () => {
     const nextTodo = {
       title: newTodo,
@@ -17,8 +21,7 @@ component('Form', ({addTodo, $from}) => {
   
   return `
     <input type="text" oninput="writing" />
-    <button onclick="addTodo" d-disabled="newTodo.length == 0">add</button>
+    <button onclick="addTodo" d-disabled="newTodo == ''">add</button>
     {newTodo}
-    <D_Spacing size=2 />
   `
 })

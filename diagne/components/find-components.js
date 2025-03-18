@@ -51,8 +51,7 @@ export const findComponents = (html, from = 'app') => {
     if (matchedContent.match(findComponentsRegEx)) {
       matchedContent = findComponents(matchedContent, name)
     }
-
-    html = html.replaceAll(componentTag, matchedContent)
+    html = html.replace(componentTag, matchedContent)
   }
   return html;
 };

@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Bamba",
+    "username": "Bamba_dev",
+    "email": "bamba@gmail.com",
+    "address": {
+      "street": "Jaxaay",
+      "suite": "Apt. 556",
+      "city": "Rufisque",
+      "zipcode": "92998-3874",
+      "geo": {
+        "lat": "-37.3159",
+        "lng": "81.1496"
+      }
+    },
+    "phone": "78 187 82 34",
+    "website": "diagnejs.com",
+    "company": [
+      {
+      "name": "Xarale",
+      "catchPhrase": "Xarale is an entreprise that build innovative web apps, mobile apps and games with all our XP",
+      "bs": "harness real-time e-markets"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Ervin Howell",
+    "username": "Antonette",
+    "email": "Shanna@melissa.tv",
+    "address": {
+      "street": "Victor Plains",
+      "suite": "Suite 879",
+      "city": "Wisokyburgh",
+      "zipcode": "90566-7771",
+      "geo": {
+        "lat": "-43.9509",
+        "lng": "-34.4618"
+      }
+    },
+    "phone": "010-692-6593 x09125",
+    "website": "anastasia.net",
+    "company": [
+      {
+      "name": "Deckow-Crist",
+      "catchPhrase": "Proactive didactic contingency",
+      "bs": "synergize scalable supply-chains"
+     }
+   ]
+  }
+]

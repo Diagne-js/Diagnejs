@@ -3,12 +3,12 @@ import {renderObjectsTree, usedFrom} from '../utils/utils.js'
   
 const declarations = (app) => {
   app = app.toString()
+//  console.log(app)
   const findDeclaration = 
    /(const|let)\s+([a-zA-Z_$][\w$]*)\s*=\s*(.+)/g;
    
     const matches = app.match(findDeclaration)
     return matches
-  
 }
 
 //  <<<<<<<<<_______ 
@@ -17,12 +17,10 @@ const declarations = (app) => {
 export const addNames = (app, component = null, props = {}) => {
   let localStore = store.app
   let i
-
   if(component) {
     store[component] = []
     localStore = store[component]
   }
-  
   const Ds = declarations(app)
   
   if(!Ds && Object.keys(props).length == 0) return
@@ -42,6 +40,7 @@ export const addNames = (app, component = null, props = {}) => {
     return
   }
     store.app = localStore
+    return localStore
 }
 
 export const addStorage = (target, name, to) => {
@@ -55,9 +54,7 @@ export const addStorage = (target, name, to) => {
   if (typeof target != 'object') {
      localStore.push({name, value: target})
   }else{
-    for (let b of renderObjectsTree(target, name)) {
-       localStore.push({name: b.name, value: b.value})
-    }
+    for (let b of renderObjectsTree(target, name)) {}
   }
 }
 
@@ -71,17 +68,18 @@ export const create = (init, options = null) => {
   changeFrom = usedFrom(changeFrom, {identify: 'yes'})
   
     let localStore = store.app
-    
     let onComp = false
 
     if (!changeFrom.includes('Page') && changeFrom != 'app') {
       onComp = true
       changeFrom = changeFrom[0].toUpperCase()+changeFrom.slice(1)
       localStore = store[changeFrom]
-    } 
+    }
+    
   if (!localStore[0].hasOwnProperty('value')){
       createUsedTime = 0
   }
+  
    const correspondingItem = localStore[createUsedTime]
    correspondingItem.value = init
    
