@@ -4,8 +4,6 @@ export default () => {
     let todos = newReactive([]);
     let newTodo = newReactive('')
     let isWritting = newDerived(() => newTodo.trim() != '')
-    console.log(isWritting)
-    let isDark = true
 
     const addTodo = (newTodo) => {
        set todos = prev => {
@@ -24,7 +22,7 @@ export default () => {
     }
 
   return <template>
-   <main style="background: {isDark ? 'black' : 'white'};height:100vh">
+   <main style="height:100vh">
     <Nav />
     <h1 style='padding:40px 0; text-align:center'>My Todo List App</h1>
     <div style='display:flex; justify-content:center;gap:5px'>
